@@ -1,8 +1,5 @@
 name: Report Test Coverage
-on:
-  push:
-    branches:
-      - master
+on: [push]
 jobs:
   run:
     runs-on: ${{ matrix.os }}
