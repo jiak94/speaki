@@ -7,7 +7,7 @@ a api service integrated with multiple text to speach service
 
 ## Supported Services
 
-[] Amazon Polly
-[] Google GCP
-[] Microsoft Azure
-[] Aliyun
+- [ ] Amazon Polly
+- [ ] Google GCP
+- [ ] Microsoft Azure
+- [ ] Aliyun
