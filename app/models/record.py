@@ -1,5 +1,5 @@
 from enum import Enum
-from peewee import Model, UUIDField, CharField, DateTimeField
+from peewee import Model, UUIDField, CharField, BlobField
 import datetime
 from app.database.database import db
 
@@ -29,6 +29,8 @@ class Record(Model):
     speed = CharField(choices=Speed.__members__.keys(), null=True)
     status = CharField(choices=Status.__members__.keys())
     download_url = CharField(null=True)
+    note = CharField(null=True)
+    audio_content = BlobField(null=True)
 
     class Meta:
         database = db

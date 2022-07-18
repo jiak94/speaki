@@ -54,6 +54,8 @@ class DatabaseOperationTests(unittest.TestCase):
             speed="normal",
             status="pending",
             download_url=f"http://localhost:8000/download/{task_id}",
+            note="test",
+            audio_content=b"test",
         )
 
         get = record.Record.get(task_id=task_id)

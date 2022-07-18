@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.models import record, speak
+from app.models import speak
 from app.database import database
 
 app = FastAPI()
@@ -20,11 +20,11 @@ async def echo():
     return {"msg": "Hello World"}
 
 
-@app.post("/speak")
-async def speak(request: speak.SpeakRequest):
+@app.post("/speech")
+async def speech(request: speak.SpeakRequest, response: speak.SpeakResponse):
     pass
 
 
 @app.get("/download/{task_id}")
-async def download(task_id: str):
+async def download(task_id: str, response: speak.DownloadResponse):
     pass

@@ -13,6 +13,8 @@ dramatiq.set_broker(redis_broker)
 def speak(text: str, service: str, voice: str, task_id: str) -> None:
     audio = client.speak(text, "en-US-JennyNeural")
     audio.save_to_wav_file("/home/jiakuan/PersonalProject/output.wav")
+    audio_data = b""
+    audio.read_data(audio_data)
 
 
 def upload(audio: AudioDataStream) -> None:
