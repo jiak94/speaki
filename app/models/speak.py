@@ -15,6 +15,13 @@ class Speed(str, Enum):
     fast = "fast"
 
 
+class Status(str, Enum):
+    pending = "pending"
+    processing = "processing"
+    success = "success"
+    failed = "failed"
+
+
 class SpeakRequest(BaseModel):
     service: Service
     text: str
@@ -30,6 +37,6 @@ class SpeakResponse(BaseModel):
 
 
 class DownloadResponse(BaseModel):
-    msg: str
-    code: Code
+    status: Status
+    msg: typing.Optional[str]
     download_url: typing.Optional[str]
