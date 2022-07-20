@@ -3,14 +3,20 @@ from app.models import record
 
 import peewee
 
-db = peewee.MySQLDatabase(None)
+
+class Database:
+    def __init__(self):
+        self.db = peewee.MySQLDatabase(None)
+
+    def init_db(self):
+        self.db.init(
+            DB_NAME, host=DB_HOST, port=DB_PORT, user=DB_USER, password=DB_PASSWORD
+        )
+        self.db.connect()
+        self.db.create_tables([record.Record])
+
+    def close_db(self):
+        self.db.close()
 
 
-def init_db():
-    db.init(DB_NAME, host=DB_HOST, port=DB_PORT, user=DB_USER, password=DB_PASSWORD)
-    db.connect()
-    db.create_tables([record.Record])
-
-
-def close_db():
-    db.close()
+db = Database()

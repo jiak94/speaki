@@ -1,4 +1,4 @@
-from enum import IntEnum
+from enum import IntEnum, Enum
 
 
 class Code(IntEnum):
@@ -20,3 +20,20 @@ class Code(IntEnum):
     INVALID_PHONE = 1005
     INVALID_NAME = 1006
     INVALID_BIRTHDAY = 100
+
+
+class Service(str, Enum):
+    azure = "azure"
+
+
+class Speed(str, Enum):
+    slow = "slow"
+    normal = "normal"
+    fast = "fast"
+
+
+class Status(str, Enum):
+    pending = "pending"
+    processing = "processing"
+    success = "success"
+    failed = "failed"
