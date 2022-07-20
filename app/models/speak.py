@@ -1,25 +1,7 @@
 from pydantic import BaseModel
 import typing
-from enum import Enum
 
-from app.models import Code
-
-
-class Service(str, Enum):
-    azure = "azure"
-
-
-class Speed(str, Enum):
-    slow = "slow"
-    normal = "normal"
-    fast = "fast"
-
-
-class Status(str, Enum):
-    pending = "pending"
-    processing = "processing"
-    success = "success"
-    failed = "failed"
+from app.models import Code, Service, Speed, Status
 
 
 class SpeakRequest(BaseModel):
@@ -37,6 +19,7 @@ class SpeakResponse(BaseModel):
 
 
 class DownloadResponse(BaseModel):
-    status: Status
+    status: typing.Optional[Status]
+    code: Code
     msg: typing.Optional[str]
     download_url: typing.Optional[str]
