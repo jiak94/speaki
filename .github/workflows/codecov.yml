@@ -22,9 +22,17 @@ jobs:
         mysql root password: 'mysql'
         mysql database: 'test'
 
+    - name: Setup Redis
+      uses: supercharge/redis-github-action@1.4.0
+      with:
+        redis-version: 4
+
 
     - name: Generate coverage report
       run: |
+        export AZURE_KEY=${{secrets.AZURE_KEY}}
+        export AZURE_REGION=${{secrets.AZURE_REGION}}
+
         pip install -r requirements.txt
         pytest --cov=./ --cov-report=xml
 

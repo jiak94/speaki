@@ -1,3 +1,3 @@
 #!/bin/bash
 
-dramatiq app.tasks
+dramatiq -v app.tasks

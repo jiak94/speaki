@@ -3,16 +3,24 @@ from app.config import REDIS_HOST, REDIS_PORT
 from app.models import record as record_model
 from dramatiq.brokers.redis import RedisBroker
 import os.path
+from typing import Any, List
 from app.config import MEDIA_PATH
 from app import config
 from app.tts.azure import azure_clint
 from app.database.database import db
+import logging
+import os
+
+logger = logging.getLogger(__name__)
 
 redis_broker = RedisBroker(host=REDIS_HOST, port=REDIS_PORT)
 dramatiq.set_broker(redis_broker)
 
-azure_clint.init(key=config.AZURE_KEY, region=config.AZURE_REGION)
-db.init_db()
+if os.getenv("WORKER") == "1":
+    logger.info("init azuer")
+    azure_clint.init(key=config.AZURE_KEY, region=config.AZURE_REGION)
+    logger.info("db init")
+    db.init_db()
 
 
 @dramatiq.actor
@@ -31,14 +39,6 @@ def speak(text: str, service: str, voice: str, task_id: str) -> None:
             record.status = record_model.Status.failed
             record.note = "Service not supported"
             record.save()
-            return
-
-    audio = azure_clint.speak(
-        text,
-    )
-    audio.save_to_wav_file("/home/jiakuan/PersonalProject/output.wav")
-    audio_data = b""
-    audio.read_data(audio_data)
 
 
 def _azure_processor(text: str, voice: str, record: record_model.Record) -> None:
@@ -46,6 +46,7 @@ def _azure_processor(text: str, voice: str, record: record_model.Record) -> None
         file_path = os.path.join(MEDIA_PATH, f"{record.task_id}.wav")
         audio = azure_clint.speak(text, voice)
         audio.save_to_wav_file(file_path)
+        logger.info(f"{record.task_id} saved to {file_path}")
         record.status = record_model.Status.success
         record.download_url = file_path
         record.save()
