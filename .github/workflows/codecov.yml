@@ -16,16 +16,16 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Setup MySQL
-      uses: mirromutth/mysql-action@v1.1
-      with:
-        mysql root password: 'mysql'
-        mysql database: 'test'
+    # - name: Setup MySQL
+    #   uses: mirromutth/mysql-action@v1.1
+    #   with:
+    #     mysql root password: 'mysql'
+    #     mysql database: 'test'
 
-    - name: Setup Redis
-      uses: supercharge/redis-github-action@1.4.0
-      with:
-        redis-version: 4
+    # - name: Setup Redis
+    #   uses: supercharge/redis-github-action@1.4.0
+    #   with:
+    #     redis-version: 4
 
 
     - name: Generate coverage report
