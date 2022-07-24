@@ -13,4 +13,4 @@ DB_NAME = os.getenv("DB_NAME", "speaki")
 DB_USER = os.getenv("DB_USER", "root")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "")
 
-MEDIA_PATH = os.getenv("MEDIA_PATH", "/media")
+MEDIA_PATH = os.getenv("MEDIA_PATH", "./media_test")
