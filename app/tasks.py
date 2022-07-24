@@ -3,8 +3,6 @@ from app.config import REDIS_HOST, REDIS_PORT
 from app.models import record as record_model
 from dramatiq.brokers.redis import RedisBroker
 import os.path
-from typing import Any, List
-from app.config import MEDIA_PATH
 from app import config
 from app.tts.azure import azure_clint
 from app.database.database import db
@@ -43,7 +41,7 @@ def speak(text: str, service: str, voice: str, task_id: str) -> None:
 
 def _azure_processor(text: str, voice: str, record: record_model.Record) -> None:
     try:
-        file_path = os.path.join(MEDIA_PATH, f"{record.task_id}.wav")
+        file_path = os.path.join("/download", f"{record.task_id}.wav")
         audio = azure_clint.speak(text, voice)
         audio.save_to_wav_file(file_path)
         logger.info(f"{record.task_id} saved to {file_path}")
