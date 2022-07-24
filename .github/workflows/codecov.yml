@@ -29,10 +29,11 @@ jobs:
 
 
     - name: Generate coverage report
+      env:
+        AZURE_KEY: ${{secrets.AZURE_KEY}}
+        AZURE_REGION: ${{secrets.AZURE_REGION}}
+        AZURE_ENDPOINT: ${{secrets.AZURE_ENDPOINT}}
       run: |
-        export AZURE_KEY=${{secrets.AZURE_KEY}}
-        export AZURE_REGION=${{secrets.AZURE_REGION}}
-
         pip install -r requirements.txt
         pytest --cov=./ --cov-report=xml
 
