@@ -5,15 +5,21 @@ import peewee
 
 
 class Database:
-    def __init__(self):
-        self.db = peewee.MySQLDatabase(None)
+    inited = False
+    db = peewee.MySQLDatabase(None)
 
-    def init_db(self):
-        self.db.init(
-            DB_NAME, host=DB_HOST, port=DB_PORT, user=DB_USER, password=DB_PASSWORD
-        )
+    def init_db(
+        self,
+        db_name=DB_NAME,
+        host=DB_HOST,
+        port=DB_PORT,
+        user=DB_USER,
+        password=DB_PASSWORD,
+    ):
+        self.db.init(db_name, host=host, port=port, user=user, password=password)
         self.db.connect()
         self.db.create_tables([record.Record])
+        self.inited = True
 
     def close_db(self):
         self.db.close()

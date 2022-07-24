@@ -1,4 +1,6 @@
 from enum import IntEnum, Enum
+import json
+from pydantic import BaseModel
 
 
 class Code(IntEnum):
@@ -37,3 +39,11 @@ class Status(str, Enum):
     processing = "processing"
     success = "success"
     failed = "failed"
+    unknown = "unknown"
+
+
+class BaseModelEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, BaseModel):
+            return o.json()
+        return json.JSONEncoder.default(self, o)
