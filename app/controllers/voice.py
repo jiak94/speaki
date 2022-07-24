@@ -12,6 +12,7 @@ def get_voices(lang: str) -> VoicesResponse:
     if len(voices) == 0:
         voices = azure_clint.get_voices()
         languages = _split_voice_by_language(voices)
+        _set_languages_to_cache(languages)
         response.voices = languages.get(lang, [])
     else:
         response.voices = voices
@@ -28,7 +29,6 @@ def _split_voice_by_language(
         if lang not in languages:
             languages[lang] = []
         languages[lang].append(voice)
-    _set_languages_to_cache(languages)
     return languages
 
 
