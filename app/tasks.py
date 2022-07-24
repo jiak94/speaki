@@ -33,20 +33,20 @@ def speak(text: str, service: str, voice: str, task_id: str) -> None:
     match service:
         case "azure":
             _azure_processor(text, voice, record)
-        case "_":
+        case _:
             record.status = record_model.Status.failed
             record.note = "Service not supported"
             record.save()
+            print("Service not supported saved!")
 
 
 def _azure_processor(text: str, voice: str, record: record_model.Record) -> None:
     try:
-        file_path = os.path.join("/download", f"{record.task_id}.wav")
+        file_path = os.path.join(config.MEDIA_PATH, f"{record.task_id}.wav")
         audio = azure_clint.speak(text, voice)
         audio.save_to_wav_file(file_path)
-        logger.info(f"{record.task_id} saved to {file_path}")
         record.status = record_model.Status.success
-        record.download_url = file_path
+        record.download_url = f"/download/{record.task_id}.wav"
         record.save()
     except Exception as e:
         record.status = record_model.Status.failed
