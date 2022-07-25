@@ -55,3 +55,9 @@ class TestWorker(unittest.TestCase):
         assert record is not None
         assert record.status == "failed"
         assert record.note == "Service not supported"
+
+    def test_speak_unknow_record(self):
+        try:
+            tasks.speak("Hello World", "azure", "en-US-AriaNeural", str(uuid.uuid4()))
+        except Exception as e:
+            assert False

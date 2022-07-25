@@ -8,6 +8,7 @@ from app.tts.azure import azure_clint
 from app.database.database import db
 import logging
 import os
+from peewee import DoesNotExist
 
 logger = logging.getLogger(__name__)
 
@@ -23,8 +24,10 @@ if os.getenv("WORKER") == "1":
 
 @dramatiq.actor
 def speak(text: str, service: str, voice: str, task_id: str) -> None:
-    record = record_model.Record.get(task_id=task_id)
-    if record is None:
+    try:
+        record = record_model.Record.get(task_id=task_id)
+    except DoesNotExist:
+        logger.info(f"record {task_id} not found")
         return
 
     record.status = record_model.Status.processing
