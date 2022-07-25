@@ -5,7 +5,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
     env:
       OS: ${{ matrix.os }}
       PYTHON: '3.10'
@@ -14,11 +14,32 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@master
       with:
-        python-version: 3.7
+        python-version: '3.10'
+
+    # - name: Setup MySQL
+    #   uses: mirromutth/mysql-action@v1.1
+    #   with:
+    #     mysql root password: 'mysql'
+    #     mysql database: 'test'
+
+    # - name: Setup Redis
+    #   uses: supercharge/redis-github-action@1.4.0
+    #   with:
+    #     redis-version: 4
+
+
     - name: Generate coverage report
+      env:
+        AZURE_KEY: ${{ secrets.AZURE_KEY }}
+        AZURE_REGION: ${{ secrets.AZURE_REGION }}
+        AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
       run: |
         pip install -r requirements.txt
-        pytest --cov=./ --cov-report=xml
+        # mkdir media_test
+        # pytest --cov=./ --cov-report=xml
+        # rm -rf media_test
+        make test
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
