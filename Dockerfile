@@ -1,4 +1,4 @@
-from python:3.10
+FROM python:3.10.5
 
 WORKDIR /code
 
@@ -7,4 +7,13 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY ./app /code/app
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+COPY ./docker/entrypoint.sh /entrypoint
+RUN chmod +x /entrypoint
+
+COPY ./docker/web.sh /web
+RUN chmod +x /web
+
+COPY ./docker/worker.sh /worker
+RUN chmod +x /worker
+
+ENTRYPOINT [ "/entrypoint" ]
