@@ -1,5 +1,7 @@
 FROM python:3.10.5
 
+RUN mkdir /tts
+
 WORKDIR /code
 
 COPY ./requirements.txt /code/requirements.txt

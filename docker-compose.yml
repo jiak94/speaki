@@ -12,7 +12,7 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - media:/media
+      - tts:/tts
     depends_on:
       mysql:
         condition: service_healthy
@@ -37,7 +37,7 @@ services:
       mysql:
         condition: service_healthy
     volumes:
-      - media:/media
+      - tts:/tts
     env_file:
       - .env
 
@@ -62,4 +62,4 @@ services:
 volumes:
   rdb_data:
   mysql_data:
-  media:
+  tts:
