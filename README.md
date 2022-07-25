@@ -9,5 +9,5 @@ a api service integrated with multiple text to speach service
 
 - [ ] Amazon Polly
 - [ ] Google GCP
-- [ ] Microsoft Azure
+- [x] Microsoft Azure
 - [ ] Aliyun
