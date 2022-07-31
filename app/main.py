@@ -11,6 +11,7 @@ from app.controllers import status as status_controller
 from app.database.database import db
 from app.database.redis import redis_client
 from app.tts.azure import azure_clint
+from app.storage.azure import azure_storage
 import os
 
 
@@ -24,6 +25,7 @@ def startup():
     logger.error(f"azure_key:{config.AZURE_KEY}")
     azure_clint.init(key=config.AZURE_KEY, region=config.AZURE_REGION)
     redis_client.init()
+    azure_storage.init()
 
 
 @app.on_event("shutdown")

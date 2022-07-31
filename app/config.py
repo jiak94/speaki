@@ -14,3 +14,17 @@ DB_USER = os.getenv("DB_USER", "root")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "")
 
 MEDIA_PATH = os.getenv("MEDIA_PATH", "./media_test")
+
+AZURE_BLOB_KEY = os.getenv("AZURE_BLOB_KEY", "")
+AZURE_BLOB_CONNECTION_STRING = os.getenv(
+    "AZURE_BLOB_CONNECTION_STRING",
+    "DefaultEndpointsProtocol=https;AccountName=ttsaudio;AccountKey=79X7gra/q9gJeE4tM0TVCA3HgskAhlEoCycQUqOW8ijSc2qdZXurNR14yLFS4vEBp+FF0XqqtS80+AStj8L5hQ==;EndpointSuffix=core.windows.net",
+)
+AZURE_STORAGE_ACCOUNT_NAME = os.getenv("AZURE_STORAGE_ACCOUNT_NAME", "")
+AZURE_BLOB_CONTAINER_NAME = os.getenv("AZURE_BLOB_CONTAINER_NAME", "tts")
+
+ENABLE_EXTERNAL_STORAGE = os.getenv("ENABLE_EXTERNAL_STORAGE", "false") in [
+    "true",
+    "True",
+]
+EXTERNAL_STORAGE_SERVICE = os.getenv("EXTERNAL_STORAGE_SERVICE", None)
