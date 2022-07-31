@@ -35,7 +35,9 @@ class TestWorker(unittest.TestCase):
         assert record.status == "success"
         assert record.download_url is not None
 
-        file_path = os.path.join(config.MEDIA_PATH, f"{task_id}.wav")
+        file_path = os.path.join(
+            config.MEDIA_PATH, os.path.basename(record.download_url)
+        )
         assert os.path.exists(file_path)
 
     def test_speak_unknown_service(self):
@@ -61,3 +63,21 @@ class TestWorker(unittest.TestCase):
             tasks.speak("Hello World", "azure", "en-US-AriaNeural", str(uuid.uuid4()))
         except Exception as e:
             assert False
+
+    def test_storage_service(self):
+        config.ENABLE_EXTERNAL_STORAGE = True
+        config.EXTERNAL_STORAGE_SERVICE = "azure"
+        res = tasks._enable_cloud_storage()
+        assert res is True
+
+        config.EXTERNAL_STORAGE_SERVICE = ""
+        res = tasks._enable_cloud_storage()
+        assert res is True
+
+        config.EXTERNAL_STORAGE_SERVICE = None
+        res = tasks._enable_cloud_storage()
+        assert res is False
+
+        config.ENABLE_EXTERNAL_STORAGE = False
+        res = tasks._enable_cloud_storage()
+        assert res is False
