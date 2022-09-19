@@ -77,7 +77,7 @@ test:  ## Runs all tests
 		echo "db status:" $$(docker inspect -f {{.State.Health.Status}} mysql-test); \
 		sleep 1; \
 	done;
-	-pytest --cov=./ --cov-report=xml
+	-poetry run pytest --cov=./ --cov-report=xml
 	@docker rm -f mysql-test
 	@docker rm -f redis-test
 	@rm -rf media_test
