@@ -22,10 +22,6 @@ jobs:
         AZURE_REGION: ${{ secrets.AZURE_REGION }}
         AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
       run: |
-        pip install -r requirements.txt
-        # mkdir media_test
-        # pytest --cov=./ --cov-report=xml
-        # rm -rf media_test
         make test
 
     - name: Upload coverage to Codecov
