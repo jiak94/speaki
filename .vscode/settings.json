@@ -3,4 +3,7 @@
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
     "python.formatting.provider": "black",
+    "yaml.schemas": {
+        "https://json.schemastore.org/github-workflow.json": "file:///home/jiakuan/PersonalProject/ez_jp/speaki/.github/workflows/codecov.yml"
+    },
 }
