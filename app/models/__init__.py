@@ -30,7 +30,7 @@ class Service(str, Enum):
 
 class Speed(str, Enum):
     slow = "slow"
-    normal = "normal"
+    normal = "regular"
     fast = "fast"
 
 

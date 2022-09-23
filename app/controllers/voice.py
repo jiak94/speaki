@@ -1,55 +1,61 @@
+from fastapi import HTTPException
 from app.models import BaseModelEncoder
 from app.models.voice import VoicesResponse, VoiceInformation
 from app.database.redis import redis_client
 from app.tts.azure import azure_clint
 import json
 from typing import List
+from app.utils import ValueNotExistsError
+import logging
+
+logger = logging.getLogger(__name__)
 
 
-def get_voices(lang: str) -> VoicesResponse:
+def get_voices(service: str, language: str) -> VoicesResponse:
     response = VoicesResponse(voices=[])
-    voices = _get_voices_from_cache(lang)
-    if len(voices) == 0:
-        voices = azure_clint.get_voices()
-        languages = _split_voice_by_language(voices)
-        _set_languages_to_cache(languages)
-        response.voices = languages.get(lang, [])
-    else:
+    try:
+        voices = _get_voices_from_cache(service, language)
         response.voices = voices
+    except ValueNotExistsError:
+        match service:
+            case "azure":
+                response.voices = _get_voices_from_azure(language)
+            case _:
+                raise HTTPException(status_code=400, detail="service not found")
+
     return response
 
 
-def _split_voice_by_language(
-    voices: List[VoiceInformation],
-) -> dict[str, List[VoiceInformation]]:
-    languages = {}
-    for voice in voices:
-        name = voice.name
-        lang = name.split("-")[0]
-        if lang not in languages:
-            languages[lang] = []
-        languages[lang].append(voice)
-    return languages
+def _set_languages_to_cache(key: str, voices: List[VoiceInformation]) -> None:
+    redis_client.set(key, json.dumps(voices, cls=BaseModelEncoder), 3600)
 
 
-def _set_languages_to_cache(languages: dict[str, List[VoiceInformation]]) -> None:
-    for lang, voices in languages.items():
-        redis_client.set(lang, json.dumps(voices, cls=BaseModelEncoder), 3600)
-
-
-def _get_voices_from_cache(language: str) -> List[VoiceInformation]:
+def _get_voices_from_cache(service: str, language: str) -> List[VoiceInformation]:
+    key = _generate_language_key(service, language)
     res = []
-    cache = redis_client.get(language)
+    cache = redis_client.get(key)
     if cache is None:
-        return res
+        raise ValueNotExistsError(f"cache not found for {key}")
 
     voices = json.loads(cache)
-
-    if voices is None:
-        return res
 
     for voice in voices:
         voiceInfo = json.loads(voice)
         res.append(VoiceInformation(**voiceInfo))
 
     return res
+
+
+def _generate_language_key(service: str, language: str) -> str:
+    return f"{service}:{language}"
+
+
+def _get_voices_from_azure(language: str) -> List[VoiceInformation]:
+    voices = azure_clint.get_voices(language)
+    key = _generate_language_key("azure", language)
+    try:
+        _set_languages_to_cache(key, voices)
+    except Exception as e:
+        logger.exception(e)
+
+    return voices

@@ -28,12 +28,14 @@ class AzureTTS:
             cancellation_details = result.cancellation_details
             raise Exception(f"Speech synthesis failed: {cancellation_details}")
 
-    def get_voices(self) -> List:
+    def get_voices(self, language: str) -> List:
         synthesizer = speechsdk.SpeechSynthesizer(
             speech_config=self.speech_config, audio_config=None
         )
 
-        result: speechsdk.SynthesisVoicesResult = synthesizer.get_voices_async().get()
+        result: speechsdk.SynthesisVoicesResult = synthesizer.get_voices_async(
+            language
+        ).get()
         res = []
         for voice in result.voices:
             gender = ""

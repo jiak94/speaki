@@ -15,7 +15,7 @@ a api service integrated with multiple text to speech service
 ## Supported Storage Services
 
 - [ ] Amazon S3
-- [ ] Microsoft Azure
+- [x] Microsoft Azure
 
 ## Getting Started
 
