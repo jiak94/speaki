@@ -1,5 +1,5 @@
 import logging
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from app import config
 from app.models.speak import SpeakRequest, SpeakResponse
@@ -56,6 +56,9 @@ async def download_file(file_name: str):
     )
 
 
-@app.get("/voices/{lang}", response_model=VoicesResponse)
-async def get_voices(lang: str):
-    return voice_controller.get_voices(lang)
+@app.get("/voices/", response_model=VoicesResponse)
+async def get_voices(service: str | None = None, language: str | None = None):
+    if not service or not language:
+        raise HTTPException(status_code=400, detail="service and language are required")
+
+    return voice_controller.get_voices(service, language)

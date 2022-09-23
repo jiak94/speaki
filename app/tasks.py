@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 redis_broker = RedisBroker(host=REDIS_HOST, port=REDIS_PORT)
 dramatiq.set_broker(redis_broker)
 
-if os.getenv("WORKER") == "1":
+if config.WORKER_MODE:
     logger.info("init azuer")
     azure_clint.init(key=config.AZURE_KEY, region=config.AZURE_REGION)
     logger.info("db init")

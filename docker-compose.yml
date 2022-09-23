@@ -13,6 +13,7 @@ services:
       - 8080:8080
     volumes:
       - tts:/tts
+      - ./app:/code/app
     depends_on:
       mysql:
         condition: service_healthy
@@ -30,7 +31,7 @@ services:
     image: speaki:latest
     command: /worker
     environment:
-      - WORKER=1
+      - WORKER=true
     depends_on:
       redis:
         condition: service_started
