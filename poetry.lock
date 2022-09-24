@@ -207,26 +207,6 @@ optional = false
 python-versions = "*"
 
 [[package]]
-name = "dramatiq"
-version = "1.13.0"
-description = "Background Processing for Python 3."
-category = "main"
-optional = false
-python-versions = ">=3.6"
-
-[package.dependencies]
-prometheus-client = ">=0.2"
-
-[package.extras]
-all = ["redis (>=2.0,<5.0)", "pylibmc (>=1.5,<2.0)", "watchdog", "watchdog-gevent", "pika (>=1.0,<2.0)", "gevent (>=1.1)"]
-dev = ["redis (>=2.0,<5.0)", "pylibmc (>=1.5,<2.0)", "watchdog", "watchdog-gevent", "pika (>=1.0,<2.0)", "gevent (>=1.1)", "alabaster", "sphinx (<1.8)", "sphinxcontrib-napoleon", "flake8", "flake8-bugbear", "flake8-quotes", "isort", "bumpversion", "hiredis", "twine", "wheel", "pytest", "pytest-benchmark", "pytest-cov", "tox"]
-gevent = ["gevent (>=1.1)"]
-memcached = ["pylibmc (>=1.5,<2.0)"]
-rabbitmq = ["pika (>=1.0,<2.0)"]
-redis = ["redis (>=2.0,<5.0)"]
-watch = ["watchdog", "watchdog-gevent"]
-
-[[package]]
 name = "fastapi"
 version = "0.79.0"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
@@ -1017,7 +997,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10,<3.11"
-content-hash = "3064eea26a5919e2b6bd5eaadca44c9634370fce15b1c2ab6465f3dcbafe96e2"
+content-hash = "23f03be5a73c3217daee6dd1be04e30f748388de5f6a0f45af5a524df3101e36"
 
 [metadata.files]
 anyio = [
@@ -1229,10 +1209,6 @@ deprecated = [
 distlib = [
     {file = "distlib-0.3.5-py2.py3-none-any.whl", hash = "sha256:b710088c59f06338ca514800ad795a132da19fda270e3ce4affc74abf955a26c"},
     {file = "distlib-0.3.5.tar.gz", hash = "sha256:a7f75737c70be3b25e2bee06288cec4e4c221de18455b2dd037fe2a795cab2fe"},
-]
-dramatiq = [
-    {file = "dramatiq-1.13.0-py3-none-any.whl", hash = "sha256:8ef7509ca62bc45c3f1e3b1a0248e9f774337100e32ba1502cfcca15df79ad61"},
-    {file = "dramatiq-1.13.0.tar.gz", hash = "sha256:b4fe0ca6b55b06bebf82cd14c88044fb267505a57d4aa47378194efa0cef5f47"},
 ]
 fastapi = [
     {file = "fastapi-0.79.0-py3-none-any.whl", hash = "sha256:d337563424ceada23857f73d5abe8dae0c28e4cccb53b2af06e78b7bb4a1c7d7"},

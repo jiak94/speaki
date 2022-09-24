@@ -3,31 +3,16 @@ import os
 import os.path
 import uuid
 
-import dramatiq
-from dramatiq.brokers.redis import RedisBroker
 from peewee import DoesNotExist
 
 from app import config
-from app.config import REDIS_HOST, REDIS_PORT
-from app.database.database import db
 from app.models import record as record_model
 from app.storage.azure import azure_storage
 from app.tts.azure import azure_clint
 
 logger = logging.getLogger(__name__)
 
-redis_broker = RedisBroker(host=REDIS_HOST, port=REDIS_PORT)
-dramatiq.set_broker(redis_broker)
 
-if config.WORKER_MODE:
-    logger.info("init azuer")
-    azure_clint.init(key=config.AZURE_KEY, region=config.AZURE_REGION)
-    logger.info("db init")
-    db.init_db()
-    azure_storage.init()
-
-
-@dramatiq.actor
 def speak(text: str, service: str, voice: str, task_id: str) -> None:
     try:
         record = record_model.Record.get(task_id=task_id)
