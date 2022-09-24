@@ -1,6 +1,8 @@
-from app.models import Status, Code
-from pydantic import BaseModel
 from typing import Optional
+
+from pydantic import BaseModel
+
+from app.models import Code, Status
 
 
 class StatusResponse(BaseModel):

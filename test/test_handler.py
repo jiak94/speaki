@@ -1,17 +1,13 @@
 import unittest
-from app.controllers.status import get_status
-from app.controllers.voice import (
-    _set_languages_to_cache,
-    _get_voices_from_cache,
-    _split_voice_by_language,
-)
-from app.database.database import db
-from app.database.redis import redis_client
-from app.tts.azure import azure_clint
-from app.models import record
 import uuid
 
+from app.controllers.status import get_status
+from app.controllers.voice import _get_voices_from_cache, _set_languages_to_cache
+from app.database.database import db
+from app.database.redis import redis_client
+from app.models import record
 from app.models.voice import VoiceInformation
+from app.tts.azure import azure_clint
 
 
 class TestHandlerSpeak(unittest.TestCase):
@@ -65,27 +61,8 @@ class TestHandlerSpeak(unittest.TestCase):
             "en": [VoiceInformation(name="en", gender="male")],
         }
 
-        _set_languages_to_cache(voices)
-        get = _get_voices_from_cache("zh")
+        _set_languages_to_cache("azure-zh", voices["zh"])
+        get = _get_voices_from_cache("azure-zh")
 
         assert get[0].name == "zh"
         assert get[0].gender == "male"
-
-    def test_split_voice_by_language(self):
-        languages = [
-            VoiceInformation(name="zh-test1", gender="male"),
-            VoiceInformation(name="zh-test2", gender="male"),
-            VoiceInformation(name="zh-test3", gender="male"),
-            VoiceInformation(name="en-test1", gender="male"),
-            VoiceInformation(name="en-test1", gender="male"),
-            VoiceInformation(name="es-test1", gender="male"),
-            VoiceInformation(name="es-test1", gender="male"),
-            VoiceInformation(name="es-test1", gender="male"),
-            VoiceInformation(name="es-test1", gender="male"),
-        ]
-        get = _split_voice_by_language(languages)
-
-        assert len(get) == 3
-        assert len(get["zh"]) == 3
-        assert len(get["en"]) == 2
-        assert len(get["es"]) == 4

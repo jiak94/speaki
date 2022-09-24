@@ -1,6 +1,6 @@
 import redis
+
 from app import config
-import typing
 
 
 class Redis(redis.Redis):

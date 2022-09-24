@@ -1,7 +1,8 @@
-from app.models.status import StatusResponse
+from peewee import DoesNotExist
+
 from app.models import Code, Status
 from app.models.record import Record
-from peewee import DoesNotExist
+from app.models.status import StatusResponse
 
 
 def get_status(task_id: str) -> StatusResponse:

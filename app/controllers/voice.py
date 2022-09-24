@@ -1,12 +1,14 @@
-from fastapi import HTTPException
-from app.models import BaseModelEncoder
-from app.models.voice import VoicesResponse, VoiceInformation
-from app.database.redis import redis_client
-from app.tts.azure import azure_clint
 import json
-from typing import List
-from app.utils import ValueNotExistsError
 import logging
+from typing import List
+
+from fastapi import HTTPException
+
+from app.database.redis import redis_client
+from app.models import BaseModelEncoder
+from app.models.voice import VoiceInformation, VoicesResponse
+from app.tts.azure import azure_clint
+from app.utils import ValueNotExistsError
 
 logger = logging.getLogger(__name__)
 

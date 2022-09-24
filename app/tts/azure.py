@@ -1,5 +1,7 @@
 from typing import List, Optional
+
 import azure.cognitiveservices.speech as speechsdk
+
 from app import config
 from app.models.voice import VoiceInformation
 
@@ -20,7 +22,7 @@ class AzureTTS:
         synthesizer = speechsdk.SpeechSynthesizer(
             speech_config=self.speech_config, audio_config=None
         )
-        result = synthesizer.speak_text_async(text).get()
+        result = synthesizer.speak_ssml_async(text).get()
 
         if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
             return speechsdk.AudioDataStream(result)

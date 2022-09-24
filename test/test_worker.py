@@ -1,12 +1,12 @@
+import os
 import unittest
+import uuid
+
+from app import config, tasks
 from app.database.database import db
 from app.database.redis import redis_client
-from app.tts.azure import azure_clint
-from app import tasks
-import uuid
-import os
 from app.models.record import Record
-from app import config
+from app.tts.azure import azure_clint
 
 
 class TestWorker(unittest.TestCase):
@@ -61,7 +61,7 @@ class TestWorker(unittest.TestCase):
     def test_speak_unknow_record(self):
         try:
             tasks.speak("Hello World", "azure", "en-US-AriaNeural", str(uuid.uuid4()))
-        except Exception as e:
+        except Exception:
             assert False
 
     def test_storage_service(self):
