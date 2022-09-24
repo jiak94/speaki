@@ -3,6 +3,7 @@ import unittest
 import uuid
 
 from app import config, tasks
+from app.controllers.speak import _wrap_with_ssml
 from app.database.database import db
 from app.database.redis import redis_client
 from app.models.record import Record
@@ -16,7 +17,10 @@ class TestWorker(unittest.TestCase):
             db_name="test", host="localhost", port=3306, user="root", password="mysql"
         )
         azure_clint.init()
-
+        self.ssml = _wrap_with_ssml(
+            "Hello World", "medium", "en-US", "en-US-AriaNeural"
+        )
+        config.ENABLE_EXTERNAL_STORAGE = False
         super().setUp()
 
     def test_speak(self):
@@ -29,7 +33,7 @@ class TestWorker(unittest.TestCase):
             speed="normal",
         )
 
-        tasks.speak("Hello World", "azure", "en-US-AriaNeural", task_id)
+        tasks.speak(self.ssml, "azure", task_id)
         record = Record.get(task_id=task_id)
         assert record is not None
         assert record.status == "success"
@@ -49,7 +53,7 @@ class TestWorker(unittest.TestCase):
             callback="http://localhost:8000/callback",
             speed="normal",
         )
-        tasks.speak("Hello World", "unknown", "en-US-AriaNeural", task_id)
+        tasks.speak(self.ssml, "unknown", task_id)
         file_path = os.path.join(config.MEDIA_PATH, f"{task_id}.wav")
         assert not os.path.exists(file_path)
 
@@ -60,7 +64,7 @@ class TestWorker(unittest.TestCase):
 
     def test_speak_unknow_record(self):
         try:
-            tasks.speak("Hello World", "azure", "en-US-AriaNeural", str(uuid.uuid4()))
+            tasks.speak(self.ssml, "azure", str(uuid.uuid4()))
         except Exception:
             assert False
 

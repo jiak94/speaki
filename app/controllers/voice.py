@@ -28,7 +28,10 @@ def get_voices(service: str, language: str) -> VoicesResponse:
     return response
 
 
-def _set_languages_to_cache(key: str, voices: List[VoiceInformation]) -> None:
+def _set_languages_to_cache(
+    service: str, language: str, voices: List[VoiceInformation]
+) -> None:
+    key = _generate_language_key(service, language)
     redis_client.set(key, json.dumps(voices, cls=BaseModelEncoder), 3600)
 
 
@@ -54,9 +57,8 @@ def _generate_language_key(service: str, language: str) -> str:
 
 def _get_voices_from_azure(language: str) -> List[VoiceInformation]:
     voices = azure_clint.get_voices(language)
-    key = _generate_language_key("azure", language)
     try:
-        _set_languages_to_cache(key, voices)
+        _set_languages_to_cache("azure", language, voices)
     except Exception as e:
         logger.exception(e)
 

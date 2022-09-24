@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 import azure.cognitiveservices.speech as speechsdk
 
 from app import config
@@ -13,12 +11,7 @@ class AzureTTS:
         self.speech_config = speechsdk.SpeechConfig(subscription=key, region=region)
         self.inited = True
 
-    def speak(
-        self, text: str, voice: Optional[str] = None
-    ) -> speechsdk.AudioDataStream:
-        if voice:
-            self.speech_config.speech_synthesis_voice_name = voice
-
+    def speak(self, text: str) -> speechsdk.AudioDataStream:
         synthesizer = speechsdk.SpeechSynthesizer(
             speech_config=self.speech_config, audio_config=None
         )
@@ -30,7 +23,7 @@ class AzureTTS:
             cancellation_details = result.cancellation_details
             raise Exception(f"Speech synthesis failed: {cancellation_details}")
 
-    def get_voices(self, language: str) -> List:
+    def get_voices(self, language: str) -> list:
         synthesizer = speechsdk.SpeechSynthesizer(
             speech_config=self.speech_config, audio_config=None
         )
