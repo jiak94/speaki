@@ -1,17 +1,18 @@
-import dramatiq
-from app.config import REDIS_HOST, REDIS_PORT
-from app.models import record as record_model
-from dramatiq.brokers.redis import RedisBroker
-import os.path
-from app import config
-from app.tts.azure import azure_clint
-from app.database.database import db
 import logging
 import os
-from peewee import DoesNotExist
-from app.storage.azure import azure_storage
+import os.path
 import uuid
 
+import dramatiq
+from dramatiq.brokers.redis import RedisBroker
+from peewee import DoesNotExist
+
+from app import config
+from app.config import REDIS_HOST, REDIS_PORT
+from app.database.database import db
+from app.models import record as record_model
+from app.storage.azure import azure_storage
+from app.tts.azure import azure_clint
 
 logger = logging.getLogger(__name__)
 

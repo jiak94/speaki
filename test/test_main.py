@@ -1,9 +1,10 @@
-import unittest
-from fastapi.testclient import TestClient
-from app.main import app
-import unittest
-from app.config import MEDIA_PATH
 import os
+import unittest
+
+from fastapi.testclient import TestClient
+
+from app.config import MEDIA_PATH
+from app.main import app
 
 client = TestClient(app)
 

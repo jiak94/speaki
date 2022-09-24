@@ -1,5 +1,6 @@
-from enum import IntEnum, Enum
 import json
+from enum import Enum, IntEnum
+
 from pydantic import BaseModel
 
 
@@ -29,9 +30,11 @@ class Service(str, Enum):
 
 
 class Speed(str, Enum):
+    x_slow = "x-slow"
     slow = "slow"
-    normal = "regular"
+    normal = "medium"
     fast = "fast"
+    x_fast = "x-fast"
 
 
 class Status(str, Enum):

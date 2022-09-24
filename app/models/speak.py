@@ -1,14 +1,15 @@
 from pydantic import BaseModel
-import typing
 
 from app.models import Code, Service, Speed
 
 
 class SpeakRequest(BaseModel):
     service: Service
-    text: str
-    callback: typing.Optional[str]
-    speed: typing.Optional[Speed]
+    text: None | str
+    ssml: None | str
+    language: str
+    callback: None | str
+    speed: None | Speed
     voice: str
 
 

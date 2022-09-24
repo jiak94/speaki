@@ -1,11 +1,12 @@
 import time
-from app.models import record
-from peewee import *
-import uuid
 import unittest
+import uuid
+
+from peewee import OperationalError
+
 from app.database.database import db
 from app.database.redis import redis_client
-from app.models import BaseModelEncoder
+from app.models import record
 
 
 class DatabaseConnectionTests(unittest.TestCase):
