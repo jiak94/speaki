@@ -27,21 +27,6 @@ services:
     ports:
       - 6379:6379
 
-  worker:
-    image: speaki:latest
-    command: /worker
-    environment:
-      - WORKER=true
-    depends_on:
-      redis:
-        condition: service_started
-      mysql:
-        condition: service_healthy
-    volumes:
-      - tts:/tts
-    env_file:
-      - .env
-
   mysql:
     image: mysql:8.0
     restart: always

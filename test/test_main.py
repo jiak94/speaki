@@ -32,3 +32,9 @@ class TestMain(unittest.TestCase):
         response = self.client.get("/download/test.txt")
         assert response.status_code == 200
         assert response.text == "Hello World"
+
+    def test_speak_invalid(self):
+        response = self.client.post("/speak", json={"text": "Hello World"})
+        assert response.status_code == 400
+
+        response = self.client.post("/speak", json={"ssml": "Hello World"})
