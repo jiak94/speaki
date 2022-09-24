@@ -60,9 +60,8 @@ class TestHandlerSpeak(unittest.TestCase):
             "zh": [VoiceInformation(name="zh", gender="male")],
             "en": [VoiceInformation(name="en", gender="male")],
         }
-
-        _set_languages_to_cache("azure-zh", voices["zh"])
-        get = _get_voices_from_cache("azure-zh")
+        _set_languages_to_cache("azure", "zh", voices["zh"])
+        get = _get_voices_from_cache("azure", "zh")
 
         assert get[0].name == "zh"
         assert get[0].gender == "male"

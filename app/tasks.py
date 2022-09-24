@@ -13,7 +13,7 @@ from app.tts.azure import azure_clint
 logger = logging.getLogger(__name__)
 
 
-def speak(text: str, service: str, voice: str, task_id: str) -> None:
+def speak(text: str, service: str, task_id: str) -> None:
     try:
         record = record_model.Record.get(task_id=task_id)
     except DoesNotExist:
@@ -25,7 +25,7 @@ def speak(text: str, service: str, voice: str, task_id: str) -> None:
 
     match service:
         case "azure":
-            _azure_processor(text, voice, record)
+            _azure_processor(text, record)
         case _:
             record.status = record_model.Status.failed
             record.note = "Service not supported"
@@ -33,9 +33,9 @@ def speak(text: str, service: str, voice: str, task_id: str) -> None:
             print("Service not supported saved!")
 
 
-def _azure_processor(text: str, voice: str, record: record_model.Record) -> None:
+def _azure_processor(text: str, record: record_model.Record) -> None:
     try:
-        audio = azure_clint.speak(text, voice)
+        audio = azure_clint.speak(text)
         record.status = record_model.Status.success
         record.download_url = _store_file(audio)
         record.save()
