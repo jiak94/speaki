@@ -1,11 +1,14 @@
 import unittest
 import uuid
+from unittest.mock import MagicMock, patch
 
+from app.controllers.speak import speak
 from app.controllers.status import get_status
 from app.controllers.voice import _get_voices_from_cache, _set_languages_to_cache
 from app.database.database import db
 from app.database.redis import redis_client
 from app.models import record
+from app.models.speak import SpeakRequest
 from app.models.voice import VoiceInformation
 from app.tts.azure import azure_clint
 
@@ -52,8 +55,17 @@ class TestHandlerSpeak(unittest.TestCase):
             self.assertEqual(resp.msg, "")
             self.assertEqual(resp.download_url, v.download_url)
 
-    def test_speak_handler(self):
-        pass
+    @patch("fastapi.BackgroundTasks")
+    def test_speak_handler(self, mock_background_tasks: MagicMock):
+        request = SpeakRequest(
+            service="azure",
+            text="hello world",
+            language="en-US",
+            voice="en-US-AriaNeural",
+        )
+        with patch.object(mock_background_tasks, "add_task") as mock_add_task:
+            speak(request, mock_background_tasks)
+            mock_add_task.assert_called_once()
 
     def test_get_voices_from_redis_hit(self):
         voices = {
