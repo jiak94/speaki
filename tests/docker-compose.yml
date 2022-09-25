@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  redis:
+    image: redis:6.2.6-alpine
+    command: redis-server --appendonly yes
+    ports:
+      - 6379:6379
+
+  mysql:
+    image: mysql:8.0
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: "mysql"
+      MYSQL_DATABASE: "test"
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=mysql --execute \"SHOW DATABASES;\""
+      interval: 3s
+      timeout: 5s
+      retries: 10

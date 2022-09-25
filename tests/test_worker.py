@@ -1,6 +1,9 @@
 import os
+import shutil
 import unittest
 import uuid
+
+import pytest
 
 from app import config, tasks
 from app.controllers.speak import _wrap_with_ssml
@@ -10,8 +13,10 @@ from app.models.record import Record
 from app.tts.azure import azure_clint
 
 
+@pytest.mark.usefixtures("docker")
 class TestWorker(unittest.TestCase):
     def setUp(self) -> None:
+        os.path.exists(config.MEDIA_PATH) or os.mkdir(config.MEDIA_PATH)
         redis_client.init(host="localhost", port=6379)
         db.init_db(
             db_name="test", host="localhost", port=3306, user="root", password="mysql"
@@ -22,6 +27,10 @@ class TestWorker(unittest.TestCase):
         )
         config.ENABLE_EXTERNAL_STORAGE = False
         super().setUp()
+
+    def tearDown(self) -> None:
+        shutil.rmtree(config.MEDIA_PATH)
+        return super().tearDown()
 
     def test_speak(self):
         task_id = str(uuid.uuid4())
