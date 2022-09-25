@@ -207,26 +207,6 @@ optional = false
 python-versions = "*"
 
 [[package]]
-name = "dramatiq"
-version = "1.13.0"
-description = "Background Processing for Python 3."
-category = "main"
-optional = false
-python-versions = ">=3.6"
-
-[package.dependencies]
-prometheus-client = ">=0.2"
-
-[package.extras]
-all = ["redis (>=2.0,<5.0)", "pylibmc (>=1.5,<2.0)", "watchdog", "watchdog-gevent", "pika (>=1.0,<2.0)", "gevent (>=1.1)"]
-dev = ["redis (>=2.0,<5.0)", "pylibmc (>=1.5,<2.0)", "watchdog", "watchdog-gevent", "pika (>=1.0,<2.0)", "gevent (>=1.1)", "alabaster", "sphinx (<1.8)", "sphinxcontrib-napoleon", "flake8", "flake8-bugbear", "flake8-quotes", "isort", "bumpversion", "hiredis", "twine", "wheel", "pytest", "pytest-benchmark", "pytest-cov", "tox"]
-gevent = ["gevent (>=1.1)"]
-memcached = ["pylibmc (>=1.5,<2.0)"]
-rabbitmq = ["pika (>=1.0,<2.0)"]
-redis = ["redis (>=2.0,<5.0)"]
-watch = ["watchdog", "watchdog-gevent"]
-
-[[package]]
 name = "fastapi"
 version = "0.79.0"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
@@ -689,6 +669,22 @@ pytest = ">=4.6"
 testing = ["virtualenv", "pytest-xdist", "six", "process-tests", "hunter", "fields"]
 
 [[package]]
+name = "pytest-docker"
+version = "1.0.1"
+description = "Simple pytest fixtures for Docker and docker-compose based tests"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+attrs = ">=19.2.0"
+pytest = ">=4.0,<8.0"
+
+[package.extras]
+tests = ["pytest-pycodestyle (>=2.0.0,<3.0)", "pytest-pylint (>=0.14.1,<1.0)", "requests (>=2.22.0,<3.0)"]
+docker-compose-v1 = ["docker-compose (>=1.27.3,<2.0)"]
+
+[[package]]
 name = "python-dotenv"
 version = "0.20.0"
 description = "Read key-value pairs from a .env file and set them as environment variables"
@@ -1017,7 +1013,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10,<3.11"
-content-hash = "3064eea26a5919e2b6bd5eaadca44c9634370fce15b1c2ab6465f3dcbafe96e2"
+content-hash = "015f313776e74f3faa60a3f776bfacd1a9d4f556df8ff1634acbf0389af30c8f"
 
 [metadata.files]
 anyio = [
@@ -1229,10 +1225,6 @@ deprecated = [
 distlib = [
     {file = "distlib-0.3.5-py2.py3-none-any.whl", hash = "sha256:b710088c59f06338ca514800ad795a132da19fda270e3ce4affc74abf955a26c"},
     {file = "distlib-0.3.5.tar.gz", hash = "sha256:a7f75737c70be3b25e2bee06288cec4e4c221de18455b2dd037fe2a795cab2fe"},
-]
-dramatiq = [
-    {file = "dramatiq-1.13.0-py3-none-any.whl", hash = "sha256:8ef7509ca62bc45c3f1e3b1a0248e9f774337100e32ba1502cfcca15df79ad61"},
-    {file = "dramatiq-1.13.0.tar.gz", hash = "sha256:b4fe0ca6b55b06bebf82cd14c88044fb267505a57d4aa47378194efa0cef5f47"},
 ]
 fastapi = [
     {file = "fastapi-0.79.0-py3-none-any.whl", hash = "sha256:d337563424ceada23857f73d5abe8dae0c28e4cccb53b2af06e78b7bb4a1c7d7"},
@@ -1562,6 +1554,10 @@ pytest = [
 pytest-cov = [
     {file = "pytest-cov-3.0.0.tar.gz", hash = "sha256:e7f0f5b1617d2210a2cabc266dfe2f4c75a8d32fb89eafb7ad9d06f6d076d470"},
     {file = "pytest_cov-3.0.0-py3-none-any.whl", hash = "sha256:578d5d15ac4a25e5f961c938b85a05b09fdaae9deef3bb6de9a6e766622ca7a6"},
+]
+pytest-docker = [
+    {file = "pytest-docker-1.0.1.tar.gz", hash = "sha256:f6e8a1e660e2ba63a5bd28703cbb13636e0febd4623dafe047afa8254fb9db8f"},
+    {file = "pytest_docker-1.0.1-py3-none-any.whl", hash = "sha256:5dd39b10747f166d04946ba5b2bfb64e105b692679ca7191de9869d8f8f0640b"},
 ]
 python-dotenv = [
     {file = "python-dotenv-0.20.0.tar.gz", hash = "sha256:b7e3b04a59693c42c36f9ab1cc2acc46fa5df8c78e178fc33a8d4cd05c8d498f"},

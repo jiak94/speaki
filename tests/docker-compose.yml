@@ -1,29 +1,8 @@
 version: "3.8"
 services:
-  web:
-    build:
-      context: .
-      labels:
-        commit: "${COMMIT}"
-    image: speaki
-    env_file:
-      - .env
-    command: /web
-    ports:
-      - 8080:8080
-    volumes:
-      - tts:/tts
-      - ./app:/code/app
-    depends_on:
-      mysql:
-        condition: service_healthy
-      redis:
-        condition: service_started
   redis:
     image: redis:6.2.6-alpine
     command: redis-server --appendonly yes
-    volumes:
-      - rdb_data:/data
     ports:
       - 6379:6379
 
@@ -33,9 +12,7 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: "mysql"
-      MYSQL_DATABASE: "speaki"
-    volumes:
-      - mysql_data:/var/lib/mysql
+      MYSQL_DATABASE: "test"
     ports:
       - 3306:3306
     healthcheck:
@@ -43,9 +20,3 @@ services:
       interval: 3s
       timeout: 5s
       retries: 10
-
-
-volumes:
-  rdb_data:
-  mysql_data:
-  tts:

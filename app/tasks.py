@@ -1,33 +1,19 @@
-import dramatiq
-from app.config import REDIS_HOST, REDIS_PORT
-from app.models import record as record_model
-from dramatiq.brokers.redis import RedisBroker
-import os.path
-from app import config
-from app.tts.azure import azure_clint
-from app.database.database import db
 import logging
 import os
-from peewee import DoesNotExist
-from app.storage.azure import azure_storage
+import os.path
 import uuid
 
+from peewee import DoesNotExist
+
+from app import config
+from app.models import record as record_model
+from app.storage.azure import azure_storage
+from app.tts.azure import azure_clint
 
 logger = logging.getLogger(__name__)
 
-redis_broker = RedisBroker(host=REDIS_HOST, port=REDIS_PORT)
-dramatiq.set_broker(redis_broker)
 
-if os.getenv("WORKER") == "1":
-    logger.info("init azuer")
-    azure_clint.init(key=config.AZURE_KEY, region=config.AZURE_REGION)
-    logger.info("db init")
-    db.init_db()
-    azure_storage.init()
-
-
-@dramatiq.actor
-def speak(text: str, service: str, voice: str, task_id: str) -> None:
+def speak(text: str, service: str, task_id: str) -> None:
     try:
         record = record_model.Record.get(task_id=task_id)
     except DoesNotExist:
@@ -39,7 +25,7 @@ def speak(text: str, service: str, voice: str, task_id: str) -> None:
 
     match service:
         case "azure":
-            _azure_processor(text, voice, record)
+            _azure_processor(text, record)
         case _:
             record.status = record_model.Status.failed
             record.note = "Service not supported"
@@ -47,9 +33,9 @@ def speak(text: str, service: str, voice: str, task_id: str) -> None:
             print("Service not supported saved!")
 
 
-def _azure_processor(text: str, voice: str, record: record_model.Record) -> None:
+def _azure_processor(text: str, record: record_model.Record) -> None:
     try:
-        audio = azure_clint.speak(text, voice)
+        audio = azure_clint.speak(text)
         record.status = record_model.Status.success
         record.download_url = _store_file(audio)
         record.save()

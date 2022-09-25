@@ -1,6 +1,7 @@
-from peewee import Model, UUIDField, CharField, BlobField
-from app.models import Service, Speed, Status
+from peewee import BlobField, CharField, Model, UUIDField
+
 from app.database.database import db
+from app.models import Service, Speed, Status
 
 
 class Record(Model):
