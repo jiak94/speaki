@@ -1,7 +1,8 @@
+import os
 import unittest
+
 from app import config
 from app.storage.azure import azure_storage
-import os
 
 
 class TestAzureBlob(unittest.TestCase):

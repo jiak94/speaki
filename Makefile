@@ -70,17 +70,7 @@ down:  ## Stops a development environment
 .PHONY: test
 test:  ## Runs all tests
 	@echo "$(BOLD)Running tests$(RESET)"
-	@mkdir media_test
-	@docker run --name redis-test -p 6379:6379 -d redis:latest
-	@docker run --name mysql-test --health-cmd='/usr/bin/mysql --user=root --password=mysql --execute "SHOW DATABASES;"' --health-interval=2s -e MYSQL_ROOT_PASSWORD=mysql -e MYSQL_DATABASE=test -p 3306:3306 -d mysql:latest
-	@while [ $$(docker inspect -f {{.State.Health.Status}} mysql-test) != "healthy" ]; do \
-		echo "db status:" $$(docker inspect -f {{.State.Health.Status}} mysql-test); \
-		sleep 1; \
-	done;
-	-poetry run pytest --cov=./ --cov-report=xml
-	@docker rm -f mysql-test
-	@docker rm -f redis-test
-	@rm -rf media_test
+	@poetry run pytest --cov=./ --cov-report=xml
 
 .PHONY: clean
 clean:  ## Cleans a development environment

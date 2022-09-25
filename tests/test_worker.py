@@ -1,23 +1,36 @@
+import os
+import shutil
 import unittest
+import uuid
+
+import pytest
+
+from app import config, tasks
+from app.controllers.speak import _wrap_with_ssml
 from app.database.database import db
 from app.database.redis import redis_client
-from app.tts.azure import azure_clint
-from app import tasks
-import uuid
-import os
 from app.models.record import Record
-from app import config
+from app.tts.azure import azure_clint
 
 
+@pytest.mark.usefixtures("docker")
 class TestWorker(unittest.TestCase):
     def setUp(self) -> None:
+        os.path.exists(config.MEDIA_PATH) or os.mkdir(config.MEDIA_PATH)
         redis_client.init(host="localhost", port=6379)
         db.init_db(
             db_name="test", host="localhost", port=3306, user="root", password="mysql"
         )
         azure_clint.init()
-
+        self.ssml = _wrap_with_ssml(
+            "Hello World", "medium", "en-US", "en-US-AriaNeural"
+        )
+        config.ENABLE_EXTERNAL_STORAGE = False
         super().setUp()
+
+    def tearDown(self) -> None:
+        shutil.rmtree(config.MEDIA_PATH)
+        return super().tearDown()
 
     def test_speak(self):
         task_id = str(uuid.uuid4())
@@ -29,7 +42,7 @@ class TestWorker(unittest.TestCase):
             speed="normal",
         )
 
-        tasks.speak("Hello World", "azure", "en-US-AriaNeural", task_id)
+        tasks.speak(self.ssml, "azure", task_id)
         record = Record.get(task_id=task_id)
         assert record is not None
         assert record.status == "success"
@@ -49,7 +62,7 @@ class TestWorker(unittest.TestCase):
             callback="http://localhost:8000/callback",
             speed="normal",
         )
-        tasks.speak("Hello World", "unknown", "en-US-AriaNeural", task_id)
+        tasks.speak(self.ssml, "unknown", task_id)
         file_path = os.path.join(config.MEDIA_PATH, f"{task_id}.wav")
         assert not os.path.exists(file_path)
 
@@ -60,8 +73,8 @@ class TestWorker(unittest.TestCase):
 
     def test_speak_unknow_record(self):
         try:
-            tasks.speak("Hello World", "azure", "en-US-AriaNeural", str(uuid.uuid4()))
-        except Exception as e:
+            tasks.speak(self.ssml, "azure", str(uuid.uuid4()))
+        except Exception:
             assert False
 
     def test_storage_service(self):

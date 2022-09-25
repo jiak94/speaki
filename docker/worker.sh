@@ -1,3 +1,3 @@
 #!/bin/bash
 
-dramatiq -v app.tasks
+poetry run dramatiq -v app.tasks

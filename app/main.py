@@ -1,19 +1,23 @@
 import logging
-from fastapi import FastAPI
-from fastapi.responses import FileResponse
-from app import config
-from app.models.speak import SpeakRequest, SpeakResponse
-from app.models.voice import VoicesResponse
-from app.models.status import StatusResponse
-from app.controllers import speak as speak_controller
-from app.controllers import voice as voice_controller
-from app.controllers import status as status_controller
-from app.database.database import db
-from app.database.redis import redis_client
-from app.tts.azure import azure_clint
-from app.storage.azure import azure_storage
 import os
 
+from fastapi import BackgroundTasks, FastAPI, HTTPException
+from fastapi.responses import FileResponse
+
+import app.utils as utils
+from app import config
+from app.controllers import (
+    speak as speak_controller,
+    status as status_controller,
+    voice as voice_controller,
+)
+from app.database.database import db
+from app.database.redis import redis_client
+from app.models.speak import SpeakRequest, SpeakResponse
+from app.models.status import StatusResponse
+from app.models.voice import VoicesResponse
+from app.storage.azure import azure_storage
+from app.tts.azure import azure_clint
 
 app = FastAPI()
 logger = logging.getLogger(__name__)
@@ -39,8 +43,13 @@ async def echo():
 
 
 @app.post("/speak", response_model=SpeakResponse)
-async def speak(request: SpeakRequest):
-    return speak_controller.speak(request)
+async def speak(request: SpeakRequest, background_tasks: BackgroundTasks):
+    if request.text and request.ssml:
+        raise HTTPException(status_code=400, detail="chose either text or ssml")
+    if request.text and utils.count_text_size(request.text) > 3000:
+        raise HTTPException(status_code=400, detail="text is too long")
+
+    return speak_controller.speak(request, background_tasks)
 
 
 @app.get("/status/{task_id}", response_model=StatusResponse)
@@ -56,6 +65,9 @@ async def download_file(file_name: str):
     )
 
 
-@app.get("/voices/{lang}", response_model=VoicesResponse)
-async def get_voices(lang: str):
-    return voice_controller.get_voices(lang)
+@app.get("/voices/", response_model=VoicesResponse)
+async def get_voices(service: str | None = None, language: str | None = None):
+    if not service or not language:
+        raise HTTPException(status_code=400, detail="service and language are required")
+
+    return voice_controller.get_voices(service, language)

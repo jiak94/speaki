@@ -1,7 +1,8 @@
-from app.models.status import StatusResponse
+from peewee import DoesNotExist
+
 from app.models import Code, Status
 from app.models.record import Record
-from peewee import DoesNotExist
+from app.models.status import StatusResponse
 
 
 def get_status(task_id: str) -> StatusResponse:
@@ -31,10 +32,12 @@ def get_status(task_id: str) -> StatusResponse:
                 response.msg = "Unknown status"
                 return response
     except DoesNotExist:
+        response.status = Status.unknown
         response.code = Code.NOT_FOUND
         response.msg = "Record Not found"
         return response
     except:
+        response.status = Status.unknown
         response.code = Code.INTERNAL_SERVER_ERROR
         response.msg = "Internal server error"
         return response

@@ -1,4 +1,6 @@
 import unittest
+
+from app.controllers.speak import _wrap_with_ssml
 from app.tts.azure import AzureTTS
 
 
@@ -9,19 +11,14 @@ class TestTTS(unittest.TestCase):
         super().setUp()
 
     def test_azure_without_voice(self):
-        try:
-            self.azure.speak("Hello World")
-        except Exception as e:
-            print(e)
-            assert False
+        ssml = _wrap_with_ssml("Hello World", "medium", "en-US", "en-US-AriaNeural")
 
-    def test_azure_with_voice(self):
         try:
-            self.azure.speak("Hello World", "en-US-AriaNeural")
+            self.azure.speak(ssml)
         except Exception as e:
             print(e)
             assert False
 
     def test_azure_get_voices(self):
-        voices = self.azure.get_voices()
+        voices = self.azure.get_voices("en-US")
         assert len(voices) > 0
