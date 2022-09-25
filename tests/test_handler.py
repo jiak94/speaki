@@ -68,6 +68,9 @@ class TestHandlerSpeak(unittest.TestCase):
                 self.assertEqual(resp.download_url, v.download_url)
             else:
                 self.assertEqual(resp.download_url, None)
+        resp = get_status(uuid.uuid4().hex)
+        self.assertEqual(resp.code, 404)
+        self.assertEqual(resp.status, "unknown")
 
     @patch("fastapi.BackgroundTasks")
     def test_speak_handler(self, mock_background_tasks: MagicMock):
