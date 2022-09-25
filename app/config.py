@@ -28,9 +28,3 @@ ENABLE_EXTERNAL_STORAGE = os.getenv("ENABLE_EXTERNAL_STORAGE", "false") in [
     "True",
 ]
 EXTERNAL_STORAGE_SERVICE = os.getenv("EXTERNAL_STORAGE_SERVICE", None)
-
-
-WORKER_MODE = False
-WORKER = os.getenv("WORKER")
-if WORKER and (WORKER == "true" or WORKER == "True"):
-    WORKER_MODE = True
