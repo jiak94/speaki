@@ -2,6 +2,8 @@ import unittest
 import uuid
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from app.controllers.speak import speak
 from app.controllers.status import get_status
 from app.controllers.voice import _get_voices_from_cache, _set_languages_to_cache
@@ -13,6 +15,7 @@ from app.models.voice import VoiceInformation
 from app.tts.azure import azure_clint
 
 
+@pytest.mark.usefixtures("docker")
 class TestHandlerSpeak(unittest.TestCase):
     db_data = {}
 
@@ -59,9 +62,12 @@ class TestHandlerSpeak(unittest.TestCase):
         for k, v in self.db_data.items():
             resp = get_status(v.task_id)
             self.assertEqual(resp.code, 0)
-            self.assertEqual(resp.status, "success")
+            self.assertEqual(resp.status, v.status)
             self.assertEqual(resp.msg, "")
-            self.assertEqual(resp.download_url, v.download_url)
+            if v.status == "success":
+                self.assertEqual(resp.download_url, v.download_url)
+            else:
+                self.assertEqual(resp.download_url, None)
 
     @patch("fastapi.BackgroundTasks")
     def test_speak_handler(self, mock_background_tasks: MagicMock):

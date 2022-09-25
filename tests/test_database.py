@@ -2,6 +2,7 @@ import time
 import unittest
 import uuid
 
+import pytest
 from peewee import OperationalError
 
 from app.database.database import db
@@ -9,6 +10,7 @@ from app.database.redis import redis_client
 from app.models import record
 
 
+@pytest.mark.usefixtures("docker")
 class DatabaseConnectionTests(unittest.TestCase):
     def setUp(self) -> None:
         db.init_db(
@@ -22,7 +24,6 @@ class DatabaseConnectionTests(unittest.TestCase):
         except:
             pass
         db.close_db()
-        super().tearDown()
 
     def test_check_table(self):
         assert record.Record.table_exists()
@@ -36,6 +37,7 @@ class DatabaseConnectionTests(unittest.TestCase):
             db.db.create_tables([record.Record], safe=False)
 
 
+@pytest.mark.usefixtures("docker")
 class DatabaseOperationTests(unittest.TestCase):
     def setUp(self) -> None:
         db.init_db(
@@ -73,6 +75,7 @@ class DatabaseOperationTests(unittest.TestCase):
         assert get.download_url == instance.download_url
 
 
+@pytest.mark.usefixtures("docker")
 class RedisOperationTests(unittest.TestCase):
     def setUp(self) -> None:
         redis_client.init(host="localhost", port=6379)
