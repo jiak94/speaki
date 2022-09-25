@@ -27,12 +27,20 @@ class TestHandlerSpeak(unittest.TestCase):
 
         for i in range(30):
             task_id = uuid.uuid4()
+            if i % 4 == 0:
+                status = "pending"
+            elif i % 4 == 1:
+                status = "processing"
+            elif i % 4 == 2:
+                status = "success"
+            else:
+                status = "failed"
             r = record.Record.create(
                 task_id=task_id,
                 service="azure",
                 callback=uuid.uuid4().__str__(),
                 speed="normal",
-                status="success",
+                status=status,
                 download_url=uuid.uuid4().__str__(),
                 note="",
                 audio_content=b"",
