@@ -56,3 +56,14 @@ class TestMain(unittest.TestCase):
         }
         response = self.client.post("/speak", json=body)
         assert response.status_code == 400
+
+        text = ["Hello"] * 3001
+        body = {
+            "text": " ".join(text),
+            "voice": "en-US-AriaNeural",
+            "speed": "medium",
+            "service": "azure",
+            "language": "en-US",
+        }
+        response = self.client.post("/speak", json=body)
+        assert response.status_code == 400

@@ -3,12 +3,12 @@ import uuid
 
 from fastapi import BackgroundTasks
 
-from app import tasks, utils
+from app import tasks
 from app.models import Code, record as record_model, speak as speak_model
 
 """
     1. Get the text size, if greater, return error
-    2. submit the task to dramatiq
+    2. submit the task to background
     3. insert into database (id, task_id, service, callback, speed, status, download_url, created_at, updated_at)
 """
 
@@ -20,12 +20,6 @@ def speak(
 ) -> speak_model.SpeakResponse:
     response = speak_model.SpeakResponse(task_id="", msg="", code=Code.OK)
     text = request.text
-    text_size = utils.count_text_size(text)
-
-    if text_size > 3000:
-        response.code = Code.BAD_REQUEST
-        response.msg = "Text size is too large"
-        return response
 
     task_id = str(uuid.uuid4())
 
@@ -45,13 +39,12 @@ def speak(
         background_tasks.add_task(
             tasks.speak, ssml, request.service, request.voice, task_id
         )
-        # tasks.speak.send(ssml, request.service, request.voice, task_id)
         response.task_id = task_id
         response.code = Code.OK
     except Exception as e:
         logger.exception(e)
         response.code = Code.INTERNAL_SERVER_ERROR
-        response.msg = "Internal server error"
+        response.msg = "cannot process request at this moment"
 
     return response
 

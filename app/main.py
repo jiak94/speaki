@@ -4,6 +4,7 @@ import os
 from fastapi import BackgroundTasks, FastAPI, HTTPException
 from fastapi.responses import FileResponse
 
+import app.utils as utils
 from app import config
 from app.controllers import (
     speak as speak_controller,
@@ -45,6 +46,8 @@ async def echo():
 async def speak(request: SpeakRequest, background_tasks: BackgroundTasks):
     if request.text and request.ssml:
         raise HTTPException(status_code=400, detail="chose either text or ssml")
+    if request.text and utils.count_text_size(request.text) > 3000:
+        raise HTTPException(status_code=400, detail="text is too long")
 
     return speak_controller.speak(request, background_tasks)
 
