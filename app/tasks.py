@@ -3,10 +3,13 @@ import os
 import os.path
 import uuid
 
+import requests
 from peewee import DoesNotExist
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 from app import config
 from app.models import record as record_model
+from app.models.callback import CallbackRequest
 from app.storage.azure import azure_storage
 from app.tts.azure import azure_clint
 
@@ -25,24 +28,34 @@ def speak(text: str, service: str, task_id: str) -> None:
 
     match service:
         case "azure":
-            _azure_processor(text, record)
+            record = _azure_processor(text, record)
         case _:
             record.status = record_model.Status.failed
             record.note = "Service not supported"
             record.save()
-            print("Service not supported saved!")
+            logger.info("service not supported")
+
+    if record.callback is not None:
+        body = CallbackRequest(
+            task_id=record.task_id,
+            status=record.status,
+            download_url=record.download_url,
+        )
+        _callback(record.callback, body)
 
 
-def _azure_processor(text: str, record: record_model.Record) -> None:
+def _azure_processor(text: str, record: record_model.Record) -> record_model.Record:
     try:
         audio = azure_clint.speak(text)
         record.status = record_model.Status.success
         record.download_url = _store_file(audio)
-        record.save()
+
     except Exception as e:
         record.status = record_model.Status.failed
         record.note = str(e)
-        record.save()
+
+    record.save()
+    return record
 
 
 def _store_file(audio) -> str:
@@ -74,3 +87,9 @@ def _enable_cloud_storage() -> bool:
     return (
         config.ENABLE_EXTERNAL_STORAGE and config.EXTERNAL_STORAGE_SERVICE is not None
     )
+
+
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(5))
+def _callback(url: str, callback_body: CallbackRequest) -> None:
+    response = requests.post(url, json=callback_body.dict())
+    response.raise_for_status()
