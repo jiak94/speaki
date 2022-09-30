@@ -205,6 +205,7 @@ testing = ["covdefaults (>=2.2)", "coverage (>=6.4.2)", "pytest (>=7.1.2)", "pyt
 
 [[package]]
 <<<<<<< HEAD
+<<<<<<< HEAD
 name = "h11"
 version = "0.12.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
@@ -227,6 +228,8 @@ async = ["asgiref (>=3.2)"]
 dotenv = ["python-dotenv"]
 
 [[package]]
+=======
+>>>>>>> tmp
 name = "gevent"
 version = "21.12.0"
 description = "Coroutine-based network library"
@@ -313,6 +316,7 @@ six = "*"
 
 [[package]]
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 name = "itsdangerous"
 version = "2.1.2"
@@ -336,6 +340,8 @@ MarkupSafe = ">=2.0"
 i18n = ["Babel (>=2.7)"]
 
 [[package]]
+=======
+>>>>>>> tmp
 name = "langdetect"
 version = "1.0.9"
 description = "Language detection library ported from Google's language-detection."
@@ -456,6 +462,22 @@ description = "a little orm"
 category = "main"
 optional = false
 python-versions = "*"
+
+[[package]]
+name = "peewee-migrate"
+version = "1.5.1"
+description = "A simple migration engine for Peewee ORM"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+click = ">=6.7"
+peewee = ">=3.3.3"
+
+[package.extras]
+build = ["bump2version", "wheel"]
+tests = ["pytest", "pytest-mypy", "psycopg2-binary"]
 
 [[package]]
 name = "platformdirs"
@@ -618,6 +640,7 @@ docker-compose-v1 = ["docker-compose (>=1.27.3,<2.0)"]
 
 [[package]]
 <<<<<<< HEAD
+<<<<<<< HEAD
 name = "pytest-mock"
 version = "3.9.0"
 description = "Thin-wrapper around the mock package for easier use with pytest"
@@ -625,13 +648,17 @@ description = "Thin-wrapper around the mock package for easier use with pytest"
 name = "pytest-mock-server"
 version = "0.3.0"
 description = "Mock server plugin for pytest"
+=======
+name = "pytest-httpserver"
+version = "1.0.6"
+description = "pytest-httpserver is a httpserver for pytest"
+>>>>>>> tmp
 category = "main"
 optional = false
-python-versions = ">=3.0"
+python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
-flask = ">=1.0"
-pytest = ">=3.5.0"
+Werkzeug = ">=2.0.0"
 
 [[package]]
 name = "python-dotenv"
@@ -903,8 +930,12 @@ python-versions = "^3.10"
 content-hash = "543d38fc8fe36196298452b9aa1c7268ec9dac06ca24c5c0a6502e109a184961"
 =======
 python-versions = "^3.10,<3.11"
+<<<<<<< HEAD
 content-hash = "104d084a53323fe904acde0fde8e6e3e69bfbbcd20b0f86af4e0c638869a11f8"
 >>>>>>> add callback
+=======
+content-hash = "c0754e783f397ed7fbc0162662908d1e794df30fd12867d48dcaed8e9ba34c95"
+>>>>>>> tmp
 
 [metadata.files]
 aioredis = [
@@ -1131,10 +1162,6 @@ filelock = [
     {file = "filelock-3.7.1-py3-none-any.whl", hash = "sha256:37def7b658813cda163b56fc564cdc75e86d338246458c4c28ae84cabefa2404"},
     {file = "filelock-3.7.1.tar.gz", hash = "sha256:3a0fd85166ad9dbab54c9aec96737b744106dc5f15c0b09a6744a445299fcf04"},
 ]
-flask = [
-    {file = "Flask-2.2.2-py3-none-any.whl", hash = "sha256:b9c46cc36662a7949f34b52d8ec7bb59c0d74ba08ba6cb9ce9adc1d8676d9526"},
-    {file = "Flask-2.2.2.tar.gz", hash = "sha256:642c450d19c4ad482f96729bd2a8f6d32554aa1e231f4f6b4e7e5264b16cca2b"},
-]
 gevent = [
     {file = "gevent-21.12.0-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:2afa3f3ad528155433f6ac8bd64fa5cc303855b97004416ec719a6b1ca179481"},
     {file = "gevent-21.12.0-cp27-cp27m-win32.whl", hash = "sha256:177f93a3a90f46a5009e0841fef561601e5c637ba4332ab8572edd96af650101"},
@@ -1257,6 +1284,7 @@ isodate = [
     {file = "isodate-0.6.1.tar.gz", hash = "sha256:48c5881de7e8b0a0d648cb024c8062dc84e7b840ed81e864c7614fd3c127bde9"},
 ]
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 itsdangerous = [
     {file = "itsdangerous-2.1.2-py3-none-any.whl", hash = "sha256:2c2349112351b88699d8d4b6b075022c0808887cb7ad10069318a8b0bc88db44"},
@@ -1266,6 +1294,8 @@ jinja2 = [
     {file = "Jinja2-3.1.2-py3-none-any.whl", hash = "sha256:6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61"},
     {file = "Jinja2-3.1.2.tar.gz", hash = "sha256:31351a702a408a9e7595a8fc6150fc3f43bb6bf7e319770cbc0db9df9437e852"},
 ]
+=======
+>>>>>>> tmp
 langdetect = [
     {file = "langdetect-1.0.9-py2-none-any.whl", hash = "sha256:7cbc0746252f19e76f77c0b1690aadf01963be835ef0cd4b56dddf2a8f1dfc2a"},
     {file = "langdetect-1.0.9.tar.gz", hash = "sha256:cbc1fef89f8d062739774bd51eda3da3274006b3661d199c2655f6b3f6d605a0"},
@@ -1366,6 +1396,10 @@ packaging = [
 peewee = [
     {file = "peewee-3.15.3.tar.gz", hash = "sha256:cc934286d0c0842203abe66a3c6583d1463371e633b03d6da054d0f74e70706f"},
 ]
+peewee-migrate = [
+    {file = "peewee-migrate-1.5.1.tar.gz", hash = "sha256:8e17b9c27cd76084ade208681692c02500adcc9eaf6f8b43610fa1666a09fb9a"},
+    {file = "peewee_migrate-1.5.1-py3-none-any.whl", hash = "sha256:7203d9fa92fc6e76b5d77a70fed4bfd56bcdd947b787d45912196c4a7916c73a"},
+]
 platformdirs = [
     {file = "platformdirs-2.5.2-py3-none-any.whl", hash = "sha256:027d8e83a2d7de06bbac4e5ef7e023c02b863d7ea5d079477e722bb41ab25788"},
     {file = "platformdirs-2.5.2.tar.gz", hash = "sha256:58c8abb07dcb441e6ee4b11d8df0ac856038f944ab98b7be6b27b2a3c7feef19"},
@@ -1448,6 +1482,7 @@ pytest-docker = [
     {file = "pytest_docker-1.0.1-py3-none-any.whl", hash = "sha256:5dd39b10747f166d04946ba5b2bfb64e105b692679ca7191de9869d8f8f0640b"},
 ]
 <<<<<<< HEAD
+<<<<<<< HEAD
 pytest-mock = [
     {file = "pytest-mock-3.9.0.tar.gz", hash = "sha256:c899a0dcc8a5f22930acd020b500abd5f956911f326864a3b979e4866e14da82"},
     {file = "pytest_mock-3.9.0-py3-none-any.whl", hash = "sha256:1a1b9264224d026932d6685a0f9cef3b61d91563c3e74af9fe5afb2767e13812"},
@@ -1456,6 +1491,11 @@ pytest-mock-server = [
     {file = "pytest-mock-server-0.3.0.tar.gz", hash = "sha256:ba62b3e1933c12408afa9525c82b9914398a8f923293b08545a12508774e03af"},
     {file = "pytest_mock_server-0.3.0-py2.py3-none-any.whl", hash = "sha256:acddccc82c0fe3e3bb05cedc7dd946282f8d552cbe322adbeb2f4f3d9ffb7633"},
     {file = "pytest_mock_server-0.3.0-py3-none-any.whl", hash = "sha256:b7a190ed614eb220f23c6962b8d5655706866f35a52f72099456282c7caa543a"},
+=======
+pytest-httpserver = [
+    {file = "pytest_httpserver-1.0.6-py3-none-any.whl", hash = "sha256:ac2379acc91fe8bdbe2911c93af8dd130e33b5899fb9934d15669480739c6d32"},
+    {file = "pytest_httpserver-1.0.6.tar.gz", hash = "sha256:9040d07bf59ac45d8de3db1d4468fd2d1d607975e4da4c872ecc0402cdbf7b3e"},
+>>>>>>> tmp
 ]
 python-dotenv = [
     {file = "python-dotenv-0.20.0.tar.gz", hash = "sha256:b7e3b04a59693c42c36f9ab1cc2acc46fa5df8c78e178fc33a8d4cd05c8d498f"},
