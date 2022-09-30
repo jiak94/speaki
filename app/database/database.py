@@ -1,28 +1,26 @@
+from contextvars import ContextVar
+
 import peewee
 
 from app.config import DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER
-from app.models import record
+
+db_state_default = {"closed": None, "conn": None, "ctx": None, "transactions": None}
+db_state = ContextVar("db_state", default=db_state_default.copy())
 
 
-class Database:
-    inited = False
-    db = peewee.MySQLDatabase(None)
+class PeeweeConnectionState(peewee._ConnectionState):
+    def __init__(self, **kwargs):
+        super().__setattr__("_state", db_state)
+        super().__init__(**kwargs)
 
-    def init_db(
-        self,
-        db_name=DB_NAME,
-        host=DB_HOST,
-        port=DB_PORT,
-        user=DB_USER,
-        password=DB_PASSWORD,
-    ):
-        self.db.init(db_name, host=host, port=port, user=user, password=password)
-        self.db.connect()
-        self.db.create_tables([record.Record])
-        self.inited = True
+    def __setattr__(self, name, value):
+        self._state.get()[name] = value
 
-    def close_db(self):
-        self.db.close()
+    def __getattr__(self, name):
+        return self._state.get()[name]
 
 
-db = Database()
+db = peewee.MySQLDatabase(
+    DB_NAME, host=DB_HOST, port=DB_PORT, user=DB_USER, password=DB_PASSWORD
+)
+db._state = PeeweeConnectionState()
