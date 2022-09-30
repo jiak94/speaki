@@ -35,13 +35,7 @@ def speak(text: str, service: str, task_id: str) -> None:
             record.save()
             logger.info("service not supported")
 
-    if record.callback is not None:
-        body = CallbackRequest(
-            task_id=record.task_id,
-            status=record.status,
-            download_url=record.download_url,
-        )
-        _callback(record.callback, body)
+    callback(record)
 
 
 def _azure_processor(text: str, record: record_model.Record) -> record_model.Record:
@@ -90,6 +84,15 @@ def _enable_cloud_storage() -> bool:
 
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(5))
-def _callback(url: str, callback_body: CallbackRequest) -> None:
-    response = requests.post(url, json=callback_body.dict())
+def callback(record: record_model.Record) -> None | requests.Response:
+    if not record.callback:
+        return None
+    body = CallbackRequest(
+        task_id=record.task_id,
+        status=record.status,
+        download_url=record.download_url,
+    )
+
+    response = requests.post(record.callback, json=body.dict())
     response.raise_for_status()
+    return response
