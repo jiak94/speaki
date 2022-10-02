@@ -67,8 +67,8 @@ down:  ## Stops a development environment
 	@echo "$(BOLD)Stopping development environment$(RESET)"
 	@-docker-compose down
 
-.PHONY: test
-test:  ## Runs all tests
+.PHONY: tests
+tests:  ## Runs all tests
 	@echo "$(BOLD)Running tests$(RESET)"
 	@poetry run pytest --cov=./ --cov-report=xml
 
