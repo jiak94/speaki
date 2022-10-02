@@ -29,7 +29,7 @@ def test_record_write(mysql):
 
 
 @pytest.mark.asyncio
-async def test_set_redis(redis):
+async def test_set_redis(docker):
     key = "test-key"
     value = "test-value"
 

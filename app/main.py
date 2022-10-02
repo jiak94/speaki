@@ -11,7 +11,6 @@ from app.controllers import (
     status as status_controller,
     voice as voice_controller,
 )
-from app.database import cache
 from app.database.database import db, db_state_default
 from app.models.record import Record
 from app.models.speak import SpeakRequest, SpeakResponse
@@ -31,7 +30,6 @@ def startup():
     db.close()
     logger.error(f"azure_key:{config.AZURE_KEY}")
     azure_clint.init(key=config.AZURE_KEY, region=config.AZURE_REGION)
-    cache.init()
     azure_storage.init()
 
 

@@ -6,7 +6,6 @@ import pytest
 from peewee import MySQLDatabase
 
 from app.config import AZURE_BLOB_CONNECTION_STRING, MEDIA_PATH
-from app.database import cache
 from app.database.database import db
 from app.models import record
 from app.storage.azure import azure_storage
@@ -45,11 +44,6 @@ def mysql(docker):
     db.connect()
     db.create_tables([record.Record])
     db.close()
-
-
-@pytest.fixture(scope="session")
-def redis(docker):
-    cache.init(host="localhost", port=6379)
 
 
 @pytest.fixture
