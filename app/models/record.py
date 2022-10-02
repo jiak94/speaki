@@ -15,4 +15,4 @@ class Record(Model):
     audio_content = BlobField(null=True)
 
     class Meta:
-        database = db.db
+        database = db
