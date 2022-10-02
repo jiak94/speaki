@@ -3,7 +3,7 @@ import os
 import os.path
 import uuid
 
-import requests
+import httpx
 from peewee import DoesNotExist
 from tenacity import retry, stop_after_attempt, wait_fixed
 
@@ -16,7 +16,7 @@ from app.tts.azure import azure_clint
 logger = logging.getLogger(__name__)
 
 
-def speak(text: str, service: str, task_id: str) -> None:
+async def speak(text: str, service: str, task_id: str) -> None:
     try:
         record = record_model.Record.get(task_id=task_id)
     except DoesNotExist:
@@ -35,7 +35,7 @@ def speak(text: str, service: str, task_id: str) -> None:
             record.save()
             logger.info("service not supported")
 
-    callback(record)
+    await callback(record)
 
 
 def _azure_processor(text: str, record: record_model.Record) -> record_model.Record:
@@ -84,7 +84,7 @@ def _enable_cloud_storage() -> bool:
 
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(5))
-def callback(record: record_model.Record) -> None | requests.Response:
+async def callback(record: record_model.Record) -> None | httpx.Response:
     if not record.callback:
         return None
     body = CallbackRequest(
@@ -93,6 +93,6 @@ def callback(record: record_model.Record) -> None | requests.Response:
         download_url=record.download_url,
     )
 
-    response = requests.post(record.callback, json=body.dict())
+    response = await httpx.AsyncClient.post(record.callback, json=body.dict())
     response.raise_for_status()
     return response
