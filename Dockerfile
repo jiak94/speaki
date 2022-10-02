@@ -13,13 +13,4 @@ COPY . /code
 
 RUN poetry install
 
-COPY ./docker/entrypoint.sh /entrypoint
-RUN chmod +x /entrypoint
-
-COPY ./docker/web.sh /web
-RUN chmod +x /web
-
-COPY ./docker/worker.sh /worker
-RUN chmod +x /worker
-
-ENTRYPOINT [ "/entrypoint" ]
+RUN poetry run uvicorn app.main:app --host 0.0.0.0 --port 8080

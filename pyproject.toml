@@ -20,6 +20,9 @@ httpx = "^0.23.0"
 pre-commit = "^2.20.0"
 PyMySQL = "^1.0.2"
 pytest-cov = "^4.0.0"
+tenacity = "^8.1.0"
+pytest-httpserver = "^1.0.6"
+peewee-migrate = "^1.5.1"
 
 [tool.poetry.dev-dependencies]
 

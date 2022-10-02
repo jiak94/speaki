@@ -102,4 +102,7 @@ def event_loop():
 
 
 def pytest_sessionfinish(session, exitstatus):
-    shutil.rmtree(MEDIA_PATH)
+    try:
+        shutil.rmtree(MEDIA_PATH)
+    except:
+        pass
