@@ -45,7 +45,7 @@ jobs:
         AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
         AZURE_BLOB_CONNECTION_STRING: ${{ secrets.AZURE_BLOB_CONNECTION_STRING }}
       run: |
-        make test
+        make tests
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
