@@ -76,3 +76,46 @@ def test_storage_service():
     config.ENABLE_EXTERNAL_STORAGE = False
     res = tasks._enable_cloud_storage()
     assert res is False
+
+
+@pytest.mark.asyncio
+async def test_callback(httpserver, mysql):
+    task_id = str(uuid.uuid4())
+    record = Record.create(
+        task_id=task_id,
+        service="azure",
+        status="success",
+        callback=httpserver.url_for("/callback"),
+        speed="normal",
+        download_url="http://localhost:8000/download",
+    )
+
+    callback_body = {
+        "task_id": record.task_id,
+        "status": record.status,
+        "download_url": record.download_url,
+        "msg": record.note,
+    }
+    httpserver.expect_request(
+        "/callback", method="POST", json=callback_body
+    ).respond_with_json({})
+
+    resp = await tasks.callback(record)
+    assert resp.status_code == 200
+    assert record is not None
+    assert record.status == "success"
+    assert record.download_url is not None
+
+
+async def test_without_callback(mysql):
+    task_id = str(uuid.uuid4())
+    record = Record.create(
+        task_id=task_id,
+        service="azure",
+        status="success",
+        speed="normal",
+        download_url="http://localhost:8000/download",
+    )
+
+    resp = await tasks.callback(record)
+    assert resp is None
