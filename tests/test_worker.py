@@ -50,10 +50,7 @@ def test_speak_unknown_service(mysql, mock_file, azure):
 
 def test_speak_unknow_record(mysql, mock_file, azure):
     ssml = _wrap_with_ssml("Hello World", "medium", "en-US", "en-US-AriaNeural")
-    try:
-        tasks.speak(ssml, "azure", str(uuid.uuid4()))
-    except Exception:
-        assert False
+    tasks.speak(ssml, "azure", str(uuid.uuid4()))
 
 
 def test_storage_service():
