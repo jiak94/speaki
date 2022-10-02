@@ -1,10 +1,10 @@
-from peewee import BlobField, CharField, Model, UUIDField
+from peewee import BlobField, CharField, UUIDField
 
-from app.database.database import db
 from app.models import Service, Speed, Status
+from app.models.base import BaseModel
 
 
-class Record(Model):
+class Record(BaseModel):
     task_id = UUIDField(primary_key=True, index=True)
     service = CharField(choices=Service.__members__.keys())
     callback = CharField(null=True)
@@ -13,6 +13,3 @@ class Record(Model):
     download_url = CharField(null=True)
     note = CharField(null=True)
     audio_content = BlobField(null=True)
-
-    class Meta:
-        database = db

@@ -3,17 +3,20 @@ import os
 import os.path
 import uuid
 
+import httpx
 from peewee import DoesNotExist
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 from app import config
 from app.models import record as record_model
+from app.models.callback import CallbackRequest
 from app.storage.azure import azure_storage
 from app.tts.azure import azure_clint
 
 logger = logging.getLogger(__name__)
 
 
-def speak(text: str, service: str, task_id: str) -> None:
+async def speak(text: str, service: str, task_id: str) -> None:
     try:
         record = record_model.Record.get(task_id=task_id)
     except DoesNotExist:
@@ -25,24 +28,34 @@ def speak(text: str, service: str, task_id: str) -> None:
 
     match service:
         case "azure":
-            _azure_processor(text, record)
+            record = _azure_processor(text, record)
         case _:
             record.status = record_model.Status.failed
             record.note = "Service not supported"
             record.save()
-            print("Service not supported saved!")
+            logger.info("service not supported")
+    try:
+        await callback(record)
+    except httpx.HTTPStatusError:
+        logger.info(f"callback failed. destination: {record.callback}")
+    except httpx.RequestError as e:
+        logger.exception(
+            f"callback failed. destination: {record.callback}. reason: {e}"
+        )
 
 
-def _azure_processor(text: str, record: record_model.Record) -> None:
+def _azure_processor(text: str, record: record_model.Record) -> record_model.Record:
     try:
         audio = azure_clint.speak(text)
         record.status = record_model.Status.success
         record.download_url = _store_file(audio)
-        record.save()
+
     except Exception as e:
         record.status = record_model.Status.failed
         record.note = str(e)
-        record.save()
+
+    record.save()
+    return record
 
 
 def _store_file(audio) -> str:
@@ -74,3 +87,19 @@ def _enable_cloud_storage() -> bool:
     return (
         config.ENABLE_EXTERNAL_STORAGE and config.EXTERNAL_STORAGE_SERVICE is not None
     )
+
+
+@retry(reraise=True, stop=stop_after_attempt(3), wait=wait_fixed(5))
+async def callback(record: record_model.Record) -> None | httpx.Response:
+    if not record.callback:
+        return None
+    body = CallbackRequest(
+        task_id=str(record.task_id),
+        status=record.status,
+        download_url=record.download_url,
+        msg=record.note,
+    )
+    async with httpx.AsyncClient() as client:
+        response = await client.post(record.callback, json=body.dict())
+    response.raise_for_status()
+    return response
