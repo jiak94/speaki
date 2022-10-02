@@ -44,6 +44,13 @@ jobs:
         AZURE_REGION: ${{ secrets.AZURE_REGION }}
         AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
         AZURE_BLOB_CONNECTION_STRING: ${{ secrets.AZURE_BLOB_CONNECTION_STRING }}
+        DB_NAME: test
+        DB_USER: root
+        DB_PASSWORD: mysql
+        DB_HOST: localhost
+        DB_PORT: 3306
+        REDIS_HOST: localhost
+        REDIS_PORT: 6379
       run: |
         make tests
 

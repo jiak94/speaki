@@ -39,7 +39,7 @@ def test_speak_handler(mysql, mocker):
 
 
 @pytest.mark.asyncio
-async def test_get_voices_from_redis_hit(redis):
+async def test_get_voices_from_redis_hit(docker):
     voices = {
         "zh": [VoiceInformation(name="zh", gender="male")],
         "en": [VoiceInformation(name="en", gender="male")],
