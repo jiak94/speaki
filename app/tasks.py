@@ -89,7 +89,7 @@ def _enable_cloud_storage() -> bool:
     )
 
 
-@retry(stop=stop_after_attempt(3), wait=wait_fixed(5))
+@retry(reraise=True, stop=stop_after_attempt(3), wait=wait_fixed(5))
 async def callback(record: record_model.Record) -> None | httpx.Response:
     if not record.callback:
         return None

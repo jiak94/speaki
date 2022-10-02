@@ -17,7 +17,6 @@ async def test_speak(mysql, mock_file, azure):
         task_id=task_id,
         service="azure",
         status="pending",
-        callback="http://localhost:8000/callback",
         speed="normal",
     )
     ssml = _wrap_with_ssml("Hello World", "medium", "en-US", "en-US-AriaNeural")
@@ -38,7 +37,6 @@ async def test_speak_unknown_service(mysql, mock_file, azure):
         task_id=task_id,
         service="azure",
         status="pending",
-        callback="http://localhost:8000/callback",
         speed="normal",
     )
     ssml = _wrap_with_ssml("Hello World", "medium", "en-US", "en-US-AriaNeural")
@@ -58,7 +56,6 @@ async def test_speak_unknow_record(mysql, mock_file, azure):
     await tasks.speak(ssml, "azure", str(uuid.uuid4()))
 
 
-@pytest.mark.asyncio
 def test_storage_service():
     config.ENABLE_EXTERNAL_STORAGE = True
     config.EXTERNAL_STORAGE_SERVICE = "azure"
@@ -107,6 +104,7 @@ async def test_callback(httpserver, mysql):
     assert record.download_url is not None
 
 
+@pytest.mark.asyncio
 async def test_without_callback(mysql):
     task_id = str(uuid.uuid4())
     record = Record.create(
