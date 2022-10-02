@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from app.database.redis import cache_client
+from app.database import cache
 from app.models import record
 
 
@@ -33,8 +33,8 @@ async def test_set_redis(redis):
     key = "test-key"
     value = "test-value"
 
-    await cache_client.set(key, value.encode("utf-8"))
+    await cache.set(key, value.encode("utf-8"))
 
-    get = (await cache_client.get(key)).decode("utf-8")
+    get = (await cache.get(key)).decode("utf-8")
 
     assert get == value
