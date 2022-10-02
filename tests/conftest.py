@@ -1,5 +1,6 @@
 import asyncio
 import os
+import shutil
 import uuid
 
 import pytest
@@ -78,13 +79,6 @@ def azure():
     azure_clint.init()
 
 
-@pytest.fixture(scope="session")
-def app(mysql):
-    from app.main import app
-
-    return app
-
-
 @pytest.fixture
 def mock_file():
     os.path.exists(MEDIA_PATH) or os.mkdir(MEDIA_PATH)
@@ -108,6 +102,4 @@ def event_loop():
 
 
 def pytest_sessionfinish(session, exitstatus):
-    import shutil
-
     shutil.rmtree(MEDIA_PATH)
