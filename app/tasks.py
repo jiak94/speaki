@@ -34,8 +34,14 @@ async def speak(text: str, service: str, task_id: str) -> None:
             record.note = "Service not supported"
             record.save()
             logger.info("service not supported")
-
-    await callback(record)
+    try:
+        await callback(record)
+    except httpx.HTTPStatusError:
+        logger.info(f"callback failed. destination: {record.callback}")
+    except httpx.RequestError as e:
+        logger.exception(
+            f"callback failed. destination: {record.callback}. reason: {e}"
+        )
 
 
 def _azure_processor(text: str, record: record_model.Record) -> record_model.Record:
@@ -88,11 +94,12 @@ async def callback(record: record_model.Record) -> None | httpx.Response:
     if not record.callback:
         return None
     body = CallbackRequest(
-        task_id=record.task_id,
+        task_id=str(record.task_id),
         status=record.status,
         download_url=record.download_url,
+        msg=record.note,
     )
-
-    response = await httpx.AsyncClient.post(record.callback, json=body.dict())
+    async with httpx.AsyncClient() as client:
+        response = await client.post(record.callback, json=body.dict())
     response.raise_for_status()
     return response
