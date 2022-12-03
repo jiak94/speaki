@@ -48,4 +48,4 @@ jobs:
           build-args: |
             BUILD_VERSION=${{ needs.tag.outputs.tag }}
             BUILD_COMMIT=${{ github.sha }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend_core:${{ needs.tag.outputs.tag }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.tag.outputs.tag }}
