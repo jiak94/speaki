@@ -23,6 +23,7 @@ pytest-cov = "^4.0.0"
 tenacity = "^8.1.0"
 pytest-httpserver = "^1.0.6"
 peewee-migrate = "^1.5.1"
+uvicorn = "^0.20.0"
 
 [tool.poetry.dev-dependencies]
 
