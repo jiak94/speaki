@@ -1,14 +1,9 @@
 version: "3.8"
 services:
-  web:
-    build:
-      context: .
-      labels:
-        commit: "${COMMIT}"
-    image: speaki
+  speaki:
+    image: ghcr.io/jiak94/speaki:dev
     env_file:
       - .env
-    command: /web
     ports:
       - 8080:8080
     volumes:

@@ -1,16 +1,24 @@
+# syntax=docker/dockerfile:1.3-labs
 FROM python:3.10.5
 
 RUN mkdir /tts
 
-WORKDIR /code
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
+    adduser --disabled-password --gecos "" speaki && \
+    adduser speaki sudo
 
-# COPY ./requirements.txt /code/requirements.txt
-# RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+USER speaki
+WORKDIR /home/speaki
 
-RUN pip install poetry
+ENV PYTHONUNBUFFERED 1
+RUN curl -sSL https://install.python-poetry.org | python3 -
+ENV PATH=$PATH:/home/speaki/.local/bin
 
-COPY . /code
+
+COPY --chown=speaki pyproject.toml poetry.lock ./
 
 RUN poetry install
+
+COPY --chown=speaki ./ ./
 
 ENTRYPOINT [ "./entrypoint.sh" ]
