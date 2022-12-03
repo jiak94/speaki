@@ -1,0 +1,10 @@
+name: "Compute Docker Tag"
+description: "Compute Docker image tag for this GitHub push/pull_request/tag"
+outputs:
+  tag:
+    description: "The Docker image tag for this GitHub push/pull_request/tag"
+  target_tag:
+    description: "The Docker image tag for the target of the PR, or same as above"
+runs:
+  using: "node16"
+  main: "index.js"
