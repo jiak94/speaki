@@ -6,9 +6,17 @@ import uuid
 import pytest
 from peewee import MySQLDatabase
 
-from app.config import AZURE_BLOB_CONNECTION_STRING, MEDIA_PATH
+from app.config import (
+    AWS_ACCESS_KEY_ID,
+    AWS_S3_CONTAINER_NAME,
+    AWS_SECRET_ACCESS_KEY,
+    AWS_SESSION_TOKEN,
+    AZURE_BLOB_CONNECTION_STRING,
+    MEDIA_PATH,
+)
 from app.database.database import db
 from app.models import record
+from app.storage.aws import aws_storage
 from app.storage.azure import azure_storage
 from app.tts.azure import azure_clint
 
@@ -91,6 +99,18 @@ def mock_file():
 def azure_storage_service():
     azure_storage.init(AZURE_BLOB_CONNECTION_STRING, "test1")
     return azure_storage
+
+
+@pytest.fixture(scope="session")
+def aws_storage_service():
+    print(f"key: {AWS_ACCESS_KEY_ID}")
+    aws_storage.init(
+        "AKIAWSFPJL2CFOZY7A3H",
+        "fpd2eZ1U8o4O0Ns66JI6n/XjVoSlMS9fHB3wsGjy",
+        "us-west-1",
+        "speaki.test.bucket",
+    )
+    return aws_storage
 
 
 @pytest.fixture(scope="session")
