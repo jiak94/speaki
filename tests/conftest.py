@@ -105,8 +105,8 @@ def azure_storage_service():
 def aws_storage_service():
     print(f"key: {AWS_ACCESS_KEY_ID}")
     aws_storage.init(
-        "AKIAWSFPJL2CFOZY7A3H",
-        "fpd2eZ1U8o4O0Ns66JI6n/XjVoSlMS9fHB3wsGjy",
+        "",
+        "",
         "us-west-1",
         "speaki.test.bucket",
     )
