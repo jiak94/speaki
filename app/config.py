@@ -27,5 +27,14 @@ EXTERNAL_STORAGE_SERVICE = os.getenv("EXTERNAL_STORAGE_SERVICE", None)
 
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID", "")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY", "")
-AWS_REGION_NAME = os.getenv("AWS_REGION_NAME", "")
+AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME", "")
 AWS_S3_CONTAINER_NAME = os.getenv("AWS_S3_CONTAINER_NAME", "")
+
+
+def get_storage_type() -> str:
+    if EXTERNAL_STORAGE_SERVICE == "azure":
+        return "azure"
+    elif EXTERNAL_STORAGE_SERVICE == "s3":
+        return "s3"
+    else:
+        return None

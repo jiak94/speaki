@@ -1,11 +1,13 @@
 # syntax=docker/dockerfile:1.3-labs
 FROM python:3.10.5
 
-RUN mkdir /tts
-
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
     adduser --disabled-password --gecos "" speaki && \
     adduser speaki sudo
+
+RUN mkdir /tts
+
+RUN chown speaki /tts
 
 USER speaki
 WORKDIR /home/speaki

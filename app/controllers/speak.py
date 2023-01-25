@@ -24,18 +24,18 @@ def speak(
     task_id = str(uuid.uuid4())
 
     try:
-        record_model.Record.create(
+        record: record_model.Record = record_model.Record.create(
             task_id=task_id,
             service=request.service,
             status=record_model.Status.pending,
             callback=request.callback,
-            speed=request.speed,
+            speed=request.speed if request.speed else record_model.Speed.normal,
         )
         if request.text:
-            ssml = _wrap_with_ssml(text, request.speed, request.language, request.voice)
+            ssml = _wrap_with_ssml(text, record.speed, request.language, request.voice)
         else:
             ssml = request.ssml
-
+        logger.debug(f"ssml: {ssml}")
         background_tasks.add_task(
             tasks.speak, ssml, request.service, request.voice, task_id
         )

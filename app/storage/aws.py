@@ -1,8 +1,10 @@
-import boto3
-from app import config
 import logging
-from botocore.exceptions import ClientError
 import pathlib
+
+import boto3
+from botocore.exceptions import ClientError
+
+from app import config
 
 logger = logging.getLogger(__name__)
 
@@ -15,13 +17,15 @@ class S3Storage:
         self,
         access_key_id: str = config.AWS_ACCESS_KEY_ID,
         secret_access_key: str = config.AWS_SECRET_ACCESS_KEY,
-        region_name: str = config.AWS_REGION_NAME,
+        region_name: str = config.AWS_S3_REGION_NAME,
         container_name: str = config.AWS_S3_CONTAINER_NAME,
     ) -> None:
         self.container_name = container_name
         self.region_name = region_name
-        print(f"Init S3 Storage: {access_key_id}, {secret_access_key}, {region_name}, {container_name}")
-        self.client  = boto3.client(
+        logger.info(
+            f"Init S3 Storage: {access_key_id}, {secret_access_key}, {region_name}, {container_name}"
+        )
+        self.client = boto3.client(
             's3',
             region_name=region_name,
             aws_access_key_id=access_key_id,
@@ -33,7 +37,12 @@ class S3Storage:
 
     def upload_file(self, file: str) -> str | None:
         try:
-            response = self.client.upload_file(file, self.container_name, pathlib.Path(file).stem, ExtraArgs={'ACL': 'public-read'})
+            self.client.upload_file(
+                file,
+                self.container_name,
+                pathlib.Path(file).stem,
+                ExtraArgs={'ACL': 'public-read'},
+            )
         except ClientError as e:
             logger.error(e)
             return None
@@ -43,7 +52,8 @@ class S3Storage:
         try:
             self.client.create_bucket(
                 Bucket=bucket_name,
-                CreateBucketConfiguration={'LocationConstraint': self.region_name})
+                CreateBucketConfiguration={'LocationConstraint': self.region_name},
+            )
         except ClientError as e:
             logging.error(e)
             return False
@@ -61,4 +71,4 @@ class S3Storage:
         return True
 
 
-aws_storage = S3Storage()
+s3_storage = S3Storage()

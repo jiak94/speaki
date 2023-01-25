@@ -4,6 +4,7 @@ import shutil
 import uuid
 
 import pytest
+from dotenv import load_dotenv
 from peewee import MySQLDatabase
 
 from app.config import (
@@ -17,11 +18,12 @@ from app.models import record
 from app.storage.aws import aws_storage
 from app.storage.azure import azure_storage
 from app.tts.azure import azure_client
-from dotenv import load_dotenv
+
 
 @pytest.fixture(scope="session", autouse=True)
 def load_env():
     load_dotenv()
+
 
 @pytest.fixture(scope="session")
 def docker_compose_command():

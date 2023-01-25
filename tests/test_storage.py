@@ -1,6 +1,7 @@
 import os
-import httpx
 import uuid
+
+import httpx
 
 
 def test_azure_blob(azure_storage_service):
@@ -17,6 +18,7 @@ def test_azure_blob(azure_storage_service):
     assert httpx.get(download_url).text == uid.__str__()
     os.remove(file)
 
+
 def test_aws_s3_upload(aws_storage_service):
     uid = uuid.uuid4()
     f = open("./uuid.txt", "w")
@@ -31,6 +33,7 @@ def test_aws_s3_upload(aws_storage_service):
     assert httpx.get(download_url).text == uid.__str__()
 
     os.remove(file)
+
 
 def test_aws_s3_create_bucket(aws_storage_service):
     assert aws_storage_service.create_bucket("speaki.test.bucket.creation")
