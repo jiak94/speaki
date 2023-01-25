@@ -15,7 +15,7 @@ from app.config import (
 )
 from app.database.database import db
 from app.models import record
-from app.storage.aws import aws_storage
+from app.storage.aws import s3_storage
 from app.storage.azure import azure_storage
 from app.tts.azure import azure_client
 
@@ -108,13 +108,13 @@ def azure_storage_service():
 
 @pytest.fixture(scope="session")
 def aws_storage_service():
-    aws_storage.init(
+    s3_storage.init(
         AWS_ACCESS_KEY_ID,
         AWS_SECRET_ACCESS_KEY,
         "us-west-1",
         "speaki.test.bucket",
     )
-    return aws_storage
+    return s3_storage
 
 
 @pytest.fixture(scope="session")
@@ -128,6 +128,6 @@ def event_loop():
 def pytest_sessionfinish(session, exitstatus):
     try:
         shutil.rmtree(MEDIA_PATH)
-        aws_storage.client.delete_bucket(Bucket="speaki.test.bucket")
+        s3_storage.client.delete_bucket(Bucket="speaki.test.bucket")
     except:
         pass

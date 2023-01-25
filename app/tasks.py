@@ -18,7 +18,7 @@ from app.tts.azure import azure_client
 logger = logging.getLogger(__name__)
 
 
-async def speak(text: str, service: str, voice: str, task_id: str) -> None:
+async def speak(text: str, service: str, task_id: str) -> None:
     try:
         record = record_model.Record.get(task_id=task_id)
     except DoesNotExist:
@@ -54,7 +54,6 @@ def _azure_processor(text: str, record: record_model.Record) -> record_model.Rec
 
     except Exception as e:
         logger.exception(e)
-        print(e)
         record.status = record_model.Status.failed
         record.note = str(e)
 
@@ -65,7 +64,7 @@ def _azure_processor(text: str, record: record_model.Record) -> record_model.Rec
 def _store_file(audio: speechsdk.AudioDataStream) -> str:
     audio_id = uuid.uuid4().hex
     file_path = os.path.join(config.MEDIA_PATH, audio_id)
-    print(f"file path: {file_path}")
+    logger.debug(f"file path: {file_path}")
     audio.save_to_wav_file(file_path)
 
     match config.get_storage_type():
@@ -83,12 +82,6 @@ def _store_file(audio: speechsdk.AudioDataStream) -> str:
 
 def _construct_download_url(id) -> str:
     return f"download/{id}"
-
-
-def _enable_cloud_storage() -> bool:
-    return (
-        config.ENABLE_EXTERNAL_STORAGE and config.EXTERNAL_STORAGE_SERVICE is not None
-    )
 
 
 @retry(reraise=True, stop=stop_after_attempt(3), wait=wait_fixed(5))

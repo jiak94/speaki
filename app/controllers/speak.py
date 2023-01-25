@@ -36,9 +36,7 @@ def speak(
         else:
             ssml = request.ssml
         logger.debug(f"ssml: {ssml}")
-        background_tasks.add_task(
-            tasks.speak, ssml, request.service, request.voice, task_id
-        )
+        background_tasks.add_task(tasks.speak, ssml, request.service, task_id)
         response.task_id = task_id
         response.code = Code.OK
     except Exception as e:

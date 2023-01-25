@@ -57,22 +57,25 @@ async def test_speak_unknow_record(mysql, mock_file, azure):
 
 
 def test_storage_service():
-    config.ENABLE_EXTERNAL_STORAGE = True
     config.EXTERNAL_STORAGE_SERVICE = "azure"
-    res = tasks._enable_cloud_storage()
-    assert res is True
+    res = config.get_storage_type()
+    assert res == "azure"
+
+    config.EXTERNAL_STORAGE_SERVICE = "s3"
+    res = config.get_storage_type()
+    assert res == "s3"
+
+    config.EXTERNAL_STORAGE_SERVICE = "something_else"
+    res = config.get_storage_type()
+    assert res is None
 
     config.EXTERNAL_STORAGE_SERVICE = ""
-    res = tasks._enable_cloud_storage()
-    assert res is True
+    res = tasks.config.get_storage_type()
+    assert res is None
 
     config.EXTERNAL_STORAGE_SERVICE = None
-    res = tasks._enable_cloud_storage()
-    assert res is False
-
-    config.ENABLE_EXTERNAL_STORAGE = False
-    res = tasks._enable_cloud_storage()
-    assert res is False
+    res = tasks.config.get_storage_type()
+    assert res is None
 
 
 @pytest.mark.asyncio
