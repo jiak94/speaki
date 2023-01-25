@@ -15,12 +15,12 @@ class S3Storage:
         self,
         access_key_id: str = config.AWS_ACCESS_KEY_ID,
         secret_access_key: str = config.AWS_SECRET_ACCESS_KEY,
-        region_name: str = config.AWS_SESSION_TOKEN,
+        region_name: str = config.AWS_REGION_NAME,
         container_name: str = config.AWS_S3_CONTAINER_NAME,
     ) -> None:
         self.container_name = container_name
         self.region_name = region_name
-
+        print(f"Init S3 Storage: {access_key_id}, {secret_access_key}, {region_name}, {container_name}")
         self.client  = boto3.client(
             's3',
             region_name=region_name,

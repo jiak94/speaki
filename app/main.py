@@ -17,7 +17,7 @@ from app.models.speak import SpeakRequest, SpeakResponse
 from app.models.status import StatusResponse
 from app.models.voice import VoicesResponse
 from app.storage.azure import azure_storage
-from app.tts.azure import azure_clint
+from app.tts.azure import azure_client
 
 app = FastAPI()
 logger = logging.getLogger(__name__)
@@ -28,8 +28,7 @@ def startup():
     db.connect()
     db.create_tables([Record])
     db.close()
-    logger.error(f"azure_key:{config.AZURE_KEY}")
-    azure_clint.init(key=config.AZURE_KEY, region=config.AZURE_REGION)
+    azure_client.init(key=config.AZURE_SPEECH_KEY, region=config.AZURE_SPEECH_REGION)
     azure_storage.init()
 
 

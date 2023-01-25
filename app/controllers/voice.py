@@ -7,7 +7,7 @@ from fastapi import HTTPException
 from app.database import cache
 from app.models import BaseModelEncoder
 from app.models.voice import VoiceInformation, VoicesResponse
-from app.tts.azure import azure_clint
+from app.tts.azure import azure_client
 from app.utils import ValueNotExistsError
 
 logger = logging.getLogger(__name__)
@@ -56,7 +56,7 @@ def _generate_language_key(service: str, language: str) -> str:
 
 
 async def _get_voices_from_azure(language: str) -> List[VoiceInformation]:
-    voices = azure_clint.get_voices(language)
+    voices = azure_client.get_voices(language)
     try:
         await _set_languages_to_cache("azure", language, voices)
     except Exception as e:

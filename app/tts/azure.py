@@ -7,7 +7,9 @@ from app.models.voice import VoiceInformation
 class AzureTTS:
     inited = False
 
-    def init(self, key=config.AZURE_KEY, region=config.AZURE_REGION) -> None:
+    def init(self, key=config.AZURE_SPEECH_KEY, region=config.AZURE_SPEECH_REGION) -> None:
+        print(f"init azure tts client, key: {config.AZURE_SPEECH_KEY}, region: {config.AZURE_SPEECH_REGION}")
+
         self.speech_config = speechsdk.SpeechConfig(subscription=key, region=region)
         self.inited = True
 
@@ -48,4 +50,4 @@ class AzureTTS:
         return res
 
 
-azure_clint = AzureTTS()
+azure_client = AzureTTS()

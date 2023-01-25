@@ -33,20 +33,23 @@ jobs:
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         poetry install --no-interaction --no-root
-
+    - name: Create .env file
+      uses: ozaytsev86/create-env-file@v1
+      with:
+        ENV_AZURE_SPEECH_KEY: ${{ secrets.AZURE_KEY }}
+        ENV_AZURE_SPEECH_REGION: ${{ secrets.AZURE_REGION }}
+        ENV_AZURE_SPEECH_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
+        ENV_AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_BLOB_CONNECTION_STRING }}
+        ENV_AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
+        ENV_AZURE_STORAGE_ACCOUNT_NAME: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+        ENV_DB_NAME: test
+        ENV_DB_USER: root
+        ENV_DB_PASSWORD: mysql
+        ENV_MEDIA_PATH: ./media_test
+        ENV_AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        ENV_AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        ENV_AWS_S3_REGION_NAME: ${{ secrets.AWS_S3_REGION_NAME }}
     - name: Generate coverage report
-      env:
-        AZURE_KEY: ${{ secrets.AZURE_KEY }}
-        AZURE_REGION: ${{ secrets.AZURE_REGION }}
-        AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
-        AZURE_BLOB_CONNECTION_STRING: ${{ secrets.AZURE_BLOB_CONNECTION_STRING }}
-        DB_NAME: test
-        DB_USER: root
-        DB_PASSWORD: mysql
-        DB_HOST: localhost
-        DB_PORT: 3306
-        REDIS_HOST: localhost
-        REDIS_PORT: 6379
       run: |
         make tests
 

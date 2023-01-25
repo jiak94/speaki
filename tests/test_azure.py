@@ -19,6 +19,6 @@ class TestTTS(unittest.TestCase):
             print(e)
             assert False
 
-    def test_azure_get_voices(self):
-        voices = self.azure.get_voices("en-US")
-        assert len(voices) > 0
+def test_azure_get_voices(azure):
+    voices = azure.get_voices("en-US")
+    assert len(voices) > 0

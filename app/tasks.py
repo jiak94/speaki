@@ -11,7 +11,7 @@ from app import config
 from app.models import record as record_model
 from app.models.callback import CallbackRequest
 from app.storage.azure import azure_storage
-from app.tts.azure import azure_clint
+from app.tts.azure import azure_client
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ async def speak(text: str, service: str, task_id: str) -> None:
 
 def _azure_processor(text: str, record: record_model.Record) -> record_model.Record:
     try:
-        audio = azure_clint.speak(text)
+        audio = azure_client.speak(text)
         record.status = record_model.Status.success
         record.download_url = _store_file(audio)
 

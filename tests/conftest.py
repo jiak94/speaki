@@ -8,18 +8,20 @@ from peewee import MySQLDatabase
 
 from app.config import (
     AWS_ACCESS_KEY_ID,
-    AWS_S3_CONTAINER_NAME,
     AWS_SECRET_ACCESS_KEY,
-    AWS_SESSION_TOKEN,
-    AZURE_BLOB_CONNECTION_STRING,
+    AZURE_STORAGE_CONNECTION_STRING,
     MEDIA_PATH,
 )
 from app.database.database import db
 from app.models import record
 from app.storage.aws import aws_storage
 from app.storage.azure import azure_storage
-from app.tts.azure import azure_clint
+from app.tts.azure import azure_client
+from dotenv import load_dotenv
 
+@pytest.fixture(scope="session", autouse=True)
+def load_env():
+    load_dotenv()
 
 @pytest.fixture(scope="session")
 def docker_compose_command():
@@ -84,7 +86,8 @@ def records(mysql):
 
 @pytest.fixture(scope="session")
 def azure():
-    azure_clint.init()
+    azure_client.init(os.getenv("AZURE_SPEECH_KEY"), os.getenv("AZURE_SPEECH_REGION"))
+    return azure_client
 
 
 @pytest.fixture
@@ -97,16 +100,15 @@ def mock_file():
 
 @pytest.fixture(scope="session")
 def azure_storage_service():
-    azure_storage.init(AZURE_BLOB_CONNECTION_STRING, "test1")
+    azure_storage.init(AZURE_STORAGE_CONNECTION_STRING, "test1")
     return azure_storage
 
 
 @pytest.fixture(scope="session")
 def aws_storage_service():
-    print(f"key: {AWS_ACCESS_KEY_ID}")
     aws_storage.init(
-        "",
-        "",
+        AWS_ACCESS_KEY_ID,
+        AWS_SECRET_ACCESS_KEY,
         "us-west-1",
         "speaki.test.bucket",
     )
@@ -124,5 +126,6 @@ def event_loop():
 def pytest_sessionfinish(session, exitstatus):
     try:
         shutil.rmtree(MEDIA_PATH)
+        aws_storage.client.delete_bucket(Bucket="speaki.test.bucket")
     except:
         pass
