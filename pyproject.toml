@@ -18,6 +18,7 @@ peewee-migrate = "^1.5.1"
 python = "^3.10"
 tenacity = "^8.1.0"
 uvicorn = "^0.20.0"
+pytest = "^7.2.1"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.20.0"
