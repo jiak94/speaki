@@ -50,8 +50,7 @@ jobs:
         ENV_AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         ENV_AWS_S3_REGION_NAME: ${{ secrets.AWS_S3_REGION_NAME }}
     - name: Generate coverage report
-      run: |
-        make tests
+      run: poetry run pytest --cov=./ --cov-report=xml
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
