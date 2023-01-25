@@ -1,13 +1,23 @@
+import logging
+
 import azure.cognitiveservices.speech as speechsdk
 
 from app import config
 from app.models.voice import VoiceInformation
 
+logger = logging.getLogger(__name__)
+
 
 class AzureTTS:
     inited = False
 
-    def init(self, key=config.AZURE_KEY, region=config.AZURE_REGION) -> None:
+    def init(
+        self, key=config.AZURE_SPEECH_KEY, region=config.AZURE_SPEECH_REGION
+    ) -> None:
+        logger.info(
+            f"init azure tts client, key: {config.AZURE_SPEECH_KEY}, region: {config.AZURE_SPEECH_REGION}"
+        )
+
         self.speech_config = speechsdk.SpeechConfig(subscription=key, region=region)
         self.inited = True
 
@@ -21,7 +31,9 @@ class AzureTTS:
             return speechsdk.AudioDataStream(result)
         else:
             cancellation_details = result.cancellation_details
-            raise Exception(f"Speech synthesis failed: {cancellation_details}")
+            raise Exception(
+                f"Speech synthesis failed: {cancellation_details.reason}, {cancellation_details.error_details}"
+            )
 
     def get_voices(self, language: str) -> list:
         synthesizer = speechsdk.SpeechSynthesizer(
@@ -48,4 +60,4 @@ class AzureTTS:
         return res
 
 
-azure_clint = AzureTTS()
+azure_client = AzureTTS()

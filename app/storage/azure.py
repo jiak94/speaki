@@ -20,8 +20,8 @@ class AzureStorage:
 
     def init(
         self,
-        connection_string: str = config.AZURE_BLOB_CONNECTION_STRING,
-        container_name: str = config.AZURE_BLOB_CONTAINER_NAME,
+        connection_string: str = config.AZURE_STORAGE_CONNECTION_STRING,
+        container_name: str = config.AZURE_STORAGE_CONTAINER_NAME,
     ) -> None:
         self.container_name = container_name
         self.client: BlobServiceClient = BlobServiceClient.from_connection_string(
