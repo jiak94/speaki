@@ -81,11 +81,18 @@ def test_storage_service():
 @pytest.mark.asyncio
 async def test_callback(httpserver, mysql):
     task_id = str(uuid.uuid4())
+    callback_headers = {
+                "Content-Type": "application/json",
+                "Authentication": "Bearer 1234567890"
+            },
     record = Record.create(
         task_id=task_id,
         service="azure",
         status="success",
-        callback=httpserver.url_for("/callback"),
+        callback={
+            "url": httpserver.url_for("/callback"),
+            "headers": callback_headers,
+        },
         speed="normal",
         download_url="http://localhost:8000/download",
     )
@@ -97,7 +104,7 @@ async def test_callback(httpserver, mysql):
         "msg": record.note,
     }
     httpserver.expect_request(
-        "/callback", method="POST", json=callback_body
+        "/callback", method="POST", json=callback_body, headers=callback_headers
     ).respond_with_json({})
 
     resp = await tasks.callback(record)

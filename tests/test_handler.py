@@ -6,7 +6,7 @@ import pytest
 from app.controllers.speak import speak
 from app.controllers.status import get_status
 from app.controllers.voice import _get_voices_from_cache, _set_languages_to_cache
-from app.models.speak import SpeakRequest
+from app.models.speak import SpeakRequest, CallbackInfo
 from app.models.voice import VoiceInformation
 
 
@@ -32,6 +32,23 @@ def test_speak_handler(mysql, mocker):
         text="hello world",
         language="en-US",
         voice="en-US-AriaNeural",
+    )
+    mock_background_tasks = mocker.patch.object(fastapi.BackgroundTasks, "add_task")
+    speak(request, mock_background_tasks)
+    mock_background_tasks.add_task.assert_called_once()
+
+def test_speak_handler_with_callback(mysql, mocker):
+    request = SpeakRequest(
+        service="azure",
+        text="hello world",
+        language="en-US",
+        voice="en-US-AriaNeural",
+        callback={
+            "url": "http://localhost:8000/callback",
+            "headers": {
+                "Content-Type": "application/json",
+            },
+        },
     )
     mock_background_tasks = mocker.patch.object(fastapi.BackgroundTasks, "add_task")
     speak(request, mock_background_tasks)

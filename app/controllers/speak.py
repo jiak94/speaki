@@ -28,7 +28,7 @@ def speak(
             task_id=task_id,
             service=request.service,
             status=record_model.Status.pending,
-            callback=request.callback,
+            callback=request.callback.dict() if request.callback else None,
             speed=request.speed if request.speed else record_model.Speed.normal,
         )
         if request.text:

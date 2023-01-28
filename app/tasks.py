@@ -10,10 +10,11 @@ from tenacity import retry, stop_after_attempt, wait_fixed
 
 from app import config
 from app.models import record as record_model
-from app.models.callback import CallbackRequest
+from app.models.callback import CallbackRequest, CallbackInfo
 from app.storage.aws import s3_storage
 from app.storage.azure import azure_storage
 from app.tts.azure import azure_client
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +40,7 @@ async def speak(text: str, service: str, task_id: str) -> None:
     try:
         await callback(record)
     except httpx.HTTPStatusError:
-        logger.info(f"callback failed. destination: {record.callback}")
+        logger.inexceptionfo(f"callback failed. destination: {record.callback}")
     except httpx.RequestError as e:
         logger.exception(
             f"callback failed. destination: {record.callback}. reason: {e}"
@@ -88,6 +89,12 @@ def _construct_download_url(id) -> str:
 async def callback(record: record_model.Record) -> None | httpx.Response:
     if not record.callback:
         return None
+    try:
+        callback_info = CallbackInfo.parse_obj(record.callback)
+    except (TypeError, ValueError):
+        logger.exception(f"parsed callback failed: {record.callback}")
+        return None
+
     body = CallbackRequest(
         task_id=str(record.task_id),
         status=record.status,
@@ -95,6 +102,6 @@ async def callback(record: record_model.Record) -> None | httpx.Response:
         msg=record.note,
     )
     async with httpx.AsyncClient() as client:
-        response = await client.post(record.callback, json=body.dict())
+        response = await client.post(callback_info.url, json=body.dict(), headers=callback_info.headers)
     response.raise_for_status()
     return response
