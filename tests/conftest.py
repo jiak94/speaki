@@ -79,8 +79,8 @@ def records(mysql):
                 "url": "http://localhost:8000/callback",
                 "headers": {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer 1234567890"
-                }
+                    "Authorization": "Bearer 1234567890",
+                },
             },
             speed="normal",
             status=status,

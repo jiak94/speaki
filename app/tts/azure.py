@@ -5,8 +5,6 @@ import azure.cognitiveservices.speech as speechsdk
 from app import config
 from app.models.voice import VoiceInformation
 
-logger = logging.getLogger(__name__)
-
 
 class AzureTTS:
     inited = False
@@ -14,7 +12,7 @@ class AzureTTS:
     def init(
         self, key=config.AZURE_SPEECH_KEY, region=config.AZURE_SPEECH_REGION
     ) -> None:
-        logger.info(
+        logging.info(
             f"init azure tts client, key: {config.AZURE_SPEECH_KEY}, region: {config.AZURE_SPEECH_REGION}"
         )
 

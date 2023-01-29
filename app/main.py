@@ -21,7 +21,6 @@ from app.storage.azure import azure_storage
 from app.tts.azure import azure_client
 
 app = FastAPI()
-logger = logging.getLogger(__name__)
 
 
 @app.on_event("startup")
@@ -35,6 +34,7 @@ def startup():
             azure_storage.init()
         case "s3":
             s3_storage.init()
+    logging.info("startup completed")
 
 
 async def reset_db_state():

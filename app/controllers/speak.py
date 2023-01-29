@@ -12,8 +12,6 @@ from app.models import Code, record as record_model, speak as speak_model
     3. insert into database (id, task_id, service, callback, speed, status, download_url, created_at, updated_at)
 """
 
-logger = logging.getLogger(__name__)
-
 
 def speak(
     request: speak_model.SpeakRequest, background_tasks: BackgroundTasks
@@ -22,28 +20,26 @@ def speak(
     text = request.text
 
     task_id = str(uuid.uuid4())
-
     try:
         record: record_model.Record = record_model.Record.create(
             task_id=task_id,
             service=request.service,
             status=record_model.Status.pending,
-            callback=request.callback.dict() if request.callback else None,
+            callback=request.callback.json() if request.callback else None,
             speed=request.speed if request.speed else record_model.Speed.normal,
         )
         if request.text:
             ssml = _wrap_with_ssml(text, record.speed, request.language, request.voice)
         else:
             ssml = request.ssml
-        logger.debug(f"ssml: {ssml}")
+        logging.debug(f"ssml: {ssml}")
         background_tasks.add_task(tasks.speak, ssml, request.service, task_id)
         response.task_id = task_id
         response.code = Code.OK
     except Exception as e:
-        logger.exception(e)
+        logging.exception(e)
         response.code = Code.INTERNAL_SERVER_ERROR
         response.msg = "cannot process request at this moment"
-
     return response
 
 

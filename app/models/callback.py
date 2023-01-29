@@ -1,10 +1,13 @@
-from pydantic import BaseModel
+from typing import Dict, Optional
+
+from pydantic import AnyUrl, BaseModel
 
 from app.models import Status
 
+
 class CallbackInfo(BaseModel):
-    url: str
-    headers: dict | None
+    url: AnyUrl
+    headers: Optional[Dict]
 
 
 class CallbackRequest(BaseModel):
