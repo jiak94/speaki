@@ -75,7 +75,13 @@ def records(mysql):
         r = record.Record.create(
             task_id=task_id,
             service="azure",
-            callback=uuid.uuid4().__str__(),
+            callback={
+                "url": "http://localhost:8000/callback",
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer 1234567890",
+                },
+            },
             speed="normal",
             status=status,
             download_url=uuid.uuid4().__str__(),

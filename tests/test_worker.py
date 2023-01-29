@@ -5,6 +5,7 @@ import pytest
 
 from app import config, tasks
 from app.controllers.speak import _wrap_with_ssml
+from app.models.callback import CallbackInfo
 from app.models.record import Record
 
 
@@ -81,11 +82,17 @@ def test_storage_service():
 @pytest.mark.asyncio
 async def test_callback(httpserver, mysql):
     task_id = str(uuid.uuid4())
+    callback_headers = (
+        {"Content-Type": "application/json", "Authentication": "Bearer 1234567890"},
+    )
     record = Record.create(
         task_id=task_id,
         service="azure",
         status="success",
-        callback=httpserver.url_for("/callback"),
+        callback=CallbackInfo(
+            url=httpserver.url_for("/callback"),
+            headers=callback_headers,
+        ).json(),
         speed="normal",
         download_url="http://localhost:8000/download",
     )

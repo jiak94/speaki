@@ -10,19 +10,17 @@ from tenacity import retry, stop_after_attempt, wait_fixed
 
 from app import config
 from app.models import record as record_model
-from app.models.callback import CallbackRequest
+from app.models.callback import CallbackInfo, CallbackRequest
 from app.storage.aws import s3_storage
 from app.storage.azure import azure_storage
 from app.tts.azure import azure_client
-
-logger = logging.getLogger(__name__)
 
 
 async def speak(text: str, service: str, task_id: str) -> None:
     try:
         record = record_model.Record.get(task_id=task_id)
     except DoesNotExist:
-        logger.info(f"record {task_id} not found")
+        logging.info(f"record {task_id} not found")
         return
 
     record.status = record_model.Status.processing
@@ -35,13 +33,13 @@ async def speak(text: str, service: str, task_id: str) -> None:
             record.status = record_model.Status.failed
             record.note = "Service not supported"
             record.save()
-            logger.info("service not supported")
+            logging.info("service not supported")
     try:
         await callback(record)
     except httpx.HTTPStatusError:
-        logger.info(f"callback failed. destination: {record.callback}")
+        logging.exception(f"callback failed. destination: {record.callback}")
     except httpx.RequestError as e:
-        logger.exception(
+        logging.exception(
             f"callback failed. destination: {record.callback}. reason: {e}"
         )
 
@@ -53,7 +51,7 @@ def _azure_processor(text: str, record: record_model.Record) -> record_model.Rec
         record.download_url = _store_file(audio)
 
     except Exception as e:
-        logger.exception(e)
+        logging.exception(e)
         record.status = record_model.Status.failed
         record.note = str(e)
 
@@ -64,7 +62,7 @@ def _azure_processor(text: str, record: record_model.Record) -> record_model.Rec
 def _store_file(audio: speechsdk.AudioDataStream) -> str:
     audio_id = uuid.uuid4().hex
     file_path = os.path.join(config.MEDIA_PATH, audio_id)
-    logger.debug(f"file path: {file_path}")
+    logging.debug(f"file path: {file_path}")
     audio.save_to_wav_file(file_path)
 
     match config.get_storage_type():
@@ -88,6 +86,12 @@ def _construct_download_url(id) -> str:
 async def callback(record: record_model.Record) -> None | httpx.Response:
     if not record.callback:
         return None
+    try:
+        callback_info = CallbackInfo.parse_raw(record.callback)
+    except (TypeError, ValueError):
+        logging.exception(f"parsed callback failed: {record.callback}")
+        return None
+
     body = CallbackRequest(
         task_id=str(record.task_id),
         status=record.status,
@@ -95,6 +99,8 @@ async def callback(record: record_model.Record) -> None | httpx.Response:
         msg=record.note,
     )
     async with httpx.AsyncClient() as client:
-        response = await client.post(record.callback, json=body.dict())
+        response = await client.post(
+            callback_info.url, json=body.dict(), headers=callback_info.headers
+        )
     response.raise_for_status()
     return response

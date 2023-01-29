@@ -38,6 +38,25 @@ def test_speak_handler(mysql, mocker):
     mock_background_tasks.add_task.assert_called_once()
 
 
+def test_speak_handler_with_callback(mysql, mocker):
+    request = SpeakRequest(
+        service="azure",
+        text="hello world",
+        language="en-US",
+        voice="en-US-AriaNeural",
+        callback={
+            "url": "http://localhost:8000/callback",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer 1234567890",
+            },
+        },
+    )
+    mock_background_tasks = mocker.patch.object(fastapi.BackgroundTasks, "add_task")
+    speak(request, mock_background_tasks)
+    mock_background_tasks.add_task.assert_called_once()
+
+
 @pytest.mark.asyncio
 async def test_get_voices_from_redis_hit(docker):
     voices = {

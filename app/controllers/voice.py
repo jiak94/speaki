@@ -10,8 +10,6 @@ from app.models.voice import VoiceInformation, VoicesResponse
 from app.tts.azure import azure_client
 from app.utils import ValueNotExistsError
 
-logger = logging.getLogger(__name__)
-
 
 async def get_voices(service: str, language: str) -> VoicesResponse:
     response = VoicesResponse(voices=[])
@@ -60,6 +58,6 @@ async def _get_voices_from_azure(language: str) -> List[VoiceInformation]:
     try:
         await _set_languages_to_cache("azure", language, voices)
     except Exception as e:
-        logger.exception(e)
+        logging.exception(e)
 
     return voices

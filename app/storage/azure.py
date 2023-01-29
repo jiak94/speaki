@@ -1,4 +1,3 @@
-import logging
 import os
 from datetime import datetime, timedelta
 
@@ -10,8 +9,6 @@ from azure.storage.blob import (
 )
 
 from app import config
-
-logger = logging.getLogger(__name__)
 
 
 class AzureStorage:

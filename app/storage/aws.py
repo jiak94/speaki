@@ -6,8 +6,6 @@ from botocore.exceptions import ClientError
 
 from app import config
 
-logger = logging.getLogger(__name__)
-
 
 class S3Storage:
     client = None
@@ -22,7 +20,7 @@ class S3Storage:
     ) -> None:
         self.container_name = container_name
         self.region_name = region_name
-        logger.info(
+        logging.info(
             f"Init S3 Storage: {access_key_id}, {secret_access_key}, {region_name}, {container_name}"
         )
         self.client = boto3.client(
@@ -44,7 +42,7 @@ class S3Storage:
                 ExtraArgs={'ACL': 'public-read'},
             )
         except ClientError as e:
-            logger.error(e)
+            logging.error(e)
             return None
         return f"https://s3.{self.region_name}.amazonaws.com/{self.container_name}/{pathlib.Path(file).stem}"
 
